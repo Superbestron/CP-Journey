@@ -27,8 +27,8 @@ int main() {
         auto it = ms.lower_bound(v[i].first); // give me the one with the greatest starting time
         if (it == ms.begin()) continue;
         it--;
-        ms[(*it).first]--;
-        if (ms[(*it).first] == 0) ms.erase((*it).first);
+        ms[it->first]--;
+        if (ms[it->first] == 0) ms.erase(it->first);
         ans++;
         ms[v[i].second]++;
     }
