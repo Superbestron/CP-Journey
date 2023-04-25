@@ -16,7 +16,6 @@ int main() {
         if (arr[i] == b) pos = i;
     }
     map<int, int> s;
-    s.
     m[0] = 1; // an array of 1 element containing b itself fits the definition above
     for (int i = pos + 1; i < n; i++) {
         if (arr[i] > b) sum++;
