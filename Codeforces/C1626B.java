@@ -21,7 +21,7 @@ public class C1626B {
                 }
             }
             if (hasFound) {
-                String ans = String.valueOf(sum);
+                String complement = String.valueOf(sum);
                 String first = test.substring(0, ctr);
                 String second;
                 if (ctr == test.length() - 2) {
@@ -29,7 +29,7 @@ public class C1626B {
                 } else {
                     second = test.substring(ctr + 2);
                 }
-                res = first + ans + second;
+                res = first + complement + second;
             } else {
                 String temp = test.substring(2);
                 sum = Character.getNumericValue(test.charAt(0)) + Character.getNumericValue(test.charAt(1));

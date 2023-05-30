@@ -16,8 +16,8 @@ class Main {
                     pebbles++;
                 }
             }
-            int ans = minPebbles(string, pebbles);
-            System.out.println(ans);
+            int complement = minPebbles(string, pebbles);
+            System.out.println(complement);
         }
     }
 
@@ -31,9 +31,9 @@ class Main {
             int currentPebbles = pebbles;
             int currentMinimum = 9999;
 
-            int ans = canMove(j, original);
+            int complement = canMove(j, original);
 
-            if (ans == 1) {
+            if (complement == 1) {
                 str.setCharAt(j, '-');
                 str.setCharAt(j - 1, '-');
                 str.setCharAt(j - 2, 'o');
@@ -41,14 +41,14 @@ class Main {
 
                 currentMinimum = minPebbles(str, currentPebbles);
                 //System.out.println(currentMinimum);
-            } else if (ans == 2) {
+            } else if (complement == 2) {
                 str.setCharAt(j, '-');
                 str.setCharAt(j + 1, '-');
                 str.setCharAt(j + 2, 'o');
                 currentPebbles--;
                 currentMinimum = minPebbles(str, currentPebbles);
                 //System.out.println(currentMinimum + "right");
-            } else if (ans == 3) {
+            } else if (complement == 3) {
                 StringBuilder str1 = new StringBuilder(str);
                 StringBuilder str2 = new StringBuilder(str);
                 int current1 = currentPebbles;

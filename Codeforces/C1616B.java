@@ -29,10 +29,10 @@ public class C1616B {
             }
             if (i == 0) i = n;
 
-            StringBuilder ans = new StringBuilder(str.substring(0, i));
-            StringBuilder rev = new StringBuilder(ans).reverse();
-            ans.append(rev);
-            System.out.println(ans);
+            StringBuilder complement = new StringBuilder(str.substring(0, i));
+            StringBuilder rev = new StringBuilder(complement).reverse();
+            complement.append(rev);
+            System.out.println(complement);
         }
     }
 }

@@ -3,7 +3,7 @@
 using namespace std;
 
 bool check_date(int day, int month, int year) {
-    if (day == 0 || month == 0) continue;
+    if (day == 0 || month == 0) return false;
     if (month > 12) return false;
     if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12) {
         if (day > 31) return false;
@@ -73,6 +73,18 @@ int main() {
     s2.insert(make_pair(1, 2));
     pq.emplace(1,2);
     pq2.emplace(1, 2);
+}
+
+// Fast exponentiation
+long long fexp(long long b, long long p, long long mod){
+    if (p == 0) return 1;
+    if (p == 1) return b;
+
+    if (p & 1) {
+        return (((fexp(b, p >> 1, mod) * fexp(b, p >> 1, mod)) % mod) * b) % mod;
+    } else{
+        return (fexp(b, p >> 1, mod) * fexp(b, p >> 1, mod)) % mod;
+    }
 }
 
 // Important points

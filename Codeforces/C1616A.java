@@ -20,15 +20,15 @@ public class C1616A {
                 map.put(x, ++val);
             }
 
-            int ans = 0;
+            int complement = 0;
             for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
                 if (entry.getKey() == 0) {
-                    ans += 1;
+                    complement += 1;
                     continue;
                 }
-                ans += Math.min(entry.getValue(), 2);
+                complement += Math.min(entry.getValue(), 2);
             }
-            System.out.println(ans);
+            System.out.println(complement);
         }
     }
 }
