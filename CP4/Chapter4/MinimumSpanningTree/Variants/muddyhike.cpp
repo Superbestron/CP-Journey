@@ -9,8 +9,11 @@ int directions[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 bool can(int weight) {
     visited.assign(M, vector<int>(N, false));
     queue<pair<int, int>> q;
-    q.emplace(0, 0);
-    visited[0][0] = true;
+    for (int i = 0; i < M; i++) {
+        if (arr[i][0] > weight) continue;
+        q.emplace(i, 0);
+        visited[i][0] = true;
+    }
     while (!q.empty()) {
         auto& [x, y] = q.front(); q.pop();
         for (auto& direction : directions) {
@@ -18,12 +21,15 @@ bool can(int weight) {
             int new_y = y + direction[1];
             if (new_x < 0 || new_x >= M || new_y < 0 || new_y >= N) continue;
             if (visited[new_x][new_y]) continue;
-            if (arr[new_x][new_y] - arr[x][y] > weight) continue;
+            if (arr[new_x][new_y] > weight) continue;
             visited[new_x][new_y] = true;
             q.emplace(new_x, new_y);
         }
     }
-    return visited[M - 1][N - 1];
+    for (int i = 0; i < M; i++) {
+        if (visited[i][N - 1]) return true;
+    }
+    return false;
 }
 
 int main() {
