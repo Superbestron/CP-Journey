@@ -2,7 +2,6 @@
 
 using namespace std;
 
-vector<char> arr;
 set<string> strings;
 vector<int> in_deg, out_deg;
 vector<vector<int>> AL;
@@ -31,9 +30,6 @@ int main() {
     cin.tie(nullptr);
     string str;
     cin >> t;
-    for (char c = 'a'; c <= 'z'; c++) {
-        arr.push_back(c);
-    }
     while (t--) {
         cin >> n;
         AL.assign(26, {});
