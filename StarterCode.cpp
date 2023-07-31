@@ -62,7 +62,7 @@ public:
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    vector<string> v = split("Hello World!", " ");
+    vector<string> v = split("Hello World!", ' ');
 
     auto comp = [](auto& a, auto& b ) { return a.second > b.second; };
     priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> pq(comp);
