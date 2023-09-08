@@ -31,7 +31,7 @@ int main() {
     match.assign(2 * N, -1);
     int MCBM = 0;     // for each free vertex
     for (int i = 0; i < N; i++) {                        // (in random order)
-        vis.assign(2 * N, 0);                        // reset first
+        vis.assign(N, 0);                        // reset first
         MCBM += Aug(i);                              // try to match f
     }
     if (MCBM == N) cout << "YES";
