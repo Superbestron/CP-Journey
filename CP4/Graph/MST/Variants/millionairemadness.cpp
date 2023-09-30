@@ -2,45 +2,61 @@
 
 using namespace std;
 
-int M, N;
-vector<vector<int>> arr, visited;
-int directions[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+typedef vector<int> vi;
+typedef tuple<int, int, int> iii;
 
-bool can(int weight) {
-    visited.assign(M, vector<int>(N, false));
-    queue<pair<int, int>> q;
-    q.emplace(0, 0);
-    visited[0][0] = true;
-    while (!q.empty()) {
-        auto& [x, y] = q.front(); q.pop();
-        for (auto& direction : directions) {
-            int new_x = x + direction[0];
-            int new_y = y + direction[1];
-            if (new_x < 0 || new_x >= M || new_y < 0 || new_y >= N) continue;
-            if (visited[new_x][new_y]) continue;
-            if (arr[new_x][new_y] - arr[x][y] > weight) continue;
-            visited[new_x][new_y] = true;
-            q.emplace(new_x, new_y);
-        }
+class UnionFind {                                // OOP style
+private:
+    vi p, rank;                           // vi p is the key part
+public:
+    explicit UnionFind(int N) {
+        p.assign(N, 0); for (int i = 0; i < N; ++i) p[i] = i;
+        rank.assign(N, 0);                           // optional speedup
     }
-    return visited[M - 1][N - 1];
-}
+
+    int findSet(int i) { return (p[i] == i) ? i : (p[i] = findSet(p[i])); }
+    bool isSameSet(int i, int j) { return findSet(i) == findSet(j); }
+
+    void unionSet(int i, int j) {
+        if (isSameSet(i, j)) return;                 // i and j are in same set
+        int x = findSet(i), y = findSet(j);          // find both rep items
+        if (rank[x] > rank[y]) swap(x, y);           // keep x 'shorter' than y
+        p[x] = y;                                    // set x under y
+        if (rank[x] == rank[y]) ++rank[y];           // optional speedup
+    }
+};
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    cin >> M >> N;
-    arr.assign(M, vector<int>(N));
+    int N, M;
+    cin >> N >> M;
+    int arr[M][N];
+    vector<iii> EL;
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
             cin >> arr[i][j];
         }
     }
-
-    int lo = 0, hi = 1e9;
-    while (hi > lo) {
-        int mid = (lo + hi) / 2;
-        can(mid) ? hi = mid : lo = mid + 1;
+    for (int i = 0; i < M; i++) {
+        for (int j = 0; j < N; j++) {
+            if (j != N - 1) {
+                EL.emplace_back(arr[i][j + 1])
+            }
+        }
     }
-    cout << hi;
+    sort(EL.begin(), EL.end());                    // sort by w, O(E log E)
+    // note: std::tuple has built-in comparison function
+
+    int num_taken = 0, mst_cost = 0;               // no edge has been taken
+    UnionFind UF(C);                               // all V are disjoint sets
+    // note: the runtime cost of UFDS is very light
+    for (auto& [w, u, v] : EL) {                  // up to O(E)
+        if (UF.isSameSet(u, v)) continue;            // already in the same CC
+        mst_cost += w;                               // add w of this edge
+        UF.unionSet(u, v);                           // link them
+        ++num_taken;                                 // 1 more edge is taken
+        if (num_taken == C - 1) break;                 // optimization
+    }
+    cout << (mst_cost + C <= M ? "yes" : "no") << '\n';
 }
