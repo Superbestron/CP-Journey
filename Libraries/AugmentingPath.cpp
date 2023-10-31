@@ -42,10 +42,13 @@ int main() {
     // AL[3] = {}   // we use directed edges from left to right set only
     // AL[4] = {}
 
-    int V = 5, Vleft = 3;                          // we ignore vertex 0
+    int V = 10, Vleft = 5;                          // we ignore vertex 0
     AL.assign(V, {});
-    AL[1] = {3, 4};
-    AL[2] = {3};
+    AL[0] = {6, 7, 8};
+    AL[1] = {6, 8, 9};
+    AL[2] = {6};
+    AL[3] = {5, 7};
+    AL[4] = {7, 8, 9};
 
     unordered_set<int> freeV;
     for (int L = 0; L < Vleft; ++L)

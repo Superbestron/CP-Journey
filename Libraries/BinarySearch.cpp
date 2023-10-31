@@ -20,4 +20,5 @@ int main() {
 //        int mid = (lo + hi + 1) / 2;
 //        can(mid) ? lo = mid : hi = mid - 1;
 //    }
+    // cout << lo
 }

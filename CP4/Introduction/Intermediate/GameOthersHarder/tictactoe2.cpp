@@ -23,7 +23,7 @@ int main() {
         int x = 0, o = 0;
         for (int j = 0; j < 3; j++) cin >> board[j];
 
-        // test validity
+        // test.txt validity
         // count no of x, no of y
         for (int j = 0; j < 3; j++) {
             for (int k = 0; k < 3; k++) {

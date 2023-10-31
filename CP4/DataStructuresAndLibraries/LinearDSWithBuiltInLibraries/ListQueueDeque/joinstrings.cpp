@@ -22,7 +22,7 @@ int main() {
 
     for (int i = 0; i < n; i++) cin >> arr[i];
     if (n == 1) {
-        cout << arr[0]; // to pass 3rd test case
+        cout << arr[0]; // to pass 3rd test.txt case
         return 0;
     }
     for (int i = 0; i < n - 1; i++) {

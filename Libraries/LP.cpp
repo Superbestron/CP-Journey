@@ -15,11 +15,7 @@
 // To use this code, create an LPSolver object with A, b, and c as
 // arguments.  Then, call Solve(x).
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <cmath>
-#include <limits>
+#include <bits/stdc++.h>
 
 using namespace std;
 

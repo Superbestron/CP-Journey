@@ -9,7 +9,7 @@ public class flowergarden {
         for (int t = 0; t < T; t++) {
             int N = sc.nextInt();
             int D = sc.nextInt();
-            long ans = 0;
+            long temp = 0;
             double total = 0;
             double prev_X = 0;
             double prev_Y = 0;
@@ -20,11 +20,11 @@ public class flowergarden {
                 prev_X = X;
                 prev_Y = Y;
                 if (total - D > EPS) continue;
-                else ans++;
+                else temp++;
             }
 
-            BigInteger ANS = BigInteger.valueOf(ans);
-            if (ans < 2) {
+            BigInteger ANS = BigInteger.valueOf(temp);
+            if (temp < 2) {
                 System.out.println(0);
             } else {
                 while (!ANS.isProbablePrime(10)) {

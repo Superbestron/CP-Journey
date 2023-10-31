@@ -1,0 +1,5 @@
+input file name is sample-input.txt
+Can match 'a' at (Row 0, Col 0) and (Row 1, Col 1)
+Can match 'a' at (Row 0, Col 0) and (Row 2, Col 2)
+Can match 'b' at (Row 0, Col 2) and (Row 1, Col 2)
+Can match 'a' at (Row 1, Col 1) and (Row 2, Col 2)

@@ -76,42 +76,7 @@ public:
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n, m, d, l;
-    cin >> m >> n;
-    string name;
-    unordered_map<int, string> mp;
-    vector<ii> EL;
-    for (int i = 1; i <= m; i++) {
-        cin >> name >> d;
-        mp[i] = name;
-        for (int j = 0; j < d; j++) {
-            cin >> l;
-            EL.emplace_back(i, l + m);
-        }
-    }
-    for (int days = 1; days <= n; days++) {
-        max_flow mf(n + m + 2);
-        for (auto& edge : EL) {
-            mf.add_edge(edge.first, edge.second, 1);
-        }
-        for (int i = 1; i <= m; i++) {
-            mf.add_edge(0, i, days);
-        }
-        for (int i = m + 1; i <= m + n; i++) {
-            mf.add_edge(i, m + n + 1, 2);
-        }
-        int ans = mf.dinic(0, n + m + 1);
-        if (ans == n * 2) {
-            cout << days << '\n';
-            for (int i = m + 1; i <= m + n; i++) {
-                cout << "Day " << i - m << ": ";
-                for (auto& j : mf.AL[i]) {
-                    auto& [v, cap, flow] = mf.EL[j];
-                    if (flow == -1) cout << mp[v] << ' ';
-                }
-                cout << '\n';
-            }
-            break;
-        }
-    }
+    max_flow mf(10);
+    mf.add_edge(5, 6, 3);
+    cout << mf.dinic(0, 9);
 }

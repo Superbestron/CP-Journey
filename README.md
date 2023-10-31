@@ -4,4 +4,5 @@ I started trying out Competitive Programming in December 2022 and I'm excited to
 
 ## Platform Accounts
 1. [Kattis](https://open.kattis.com/users/ng-tze-henn) <br>
-2. [CodeForces](https://codeforces.com/profile/Bestron)
+2. [CodeForces](https://codeforces.com/profile/Bestron) <br>
+3. [Uva](https://uhunt.onlinejudge.org/id/1573709)

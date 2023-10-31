@@ -9,12 +9,9 @@ bool IsPowerOfTwo(ll x) {
 }
 
 pair<int, int> reduceFraction(int x, int y) {
-  int d;
-  d = gcd(x, y);
-
+  int d = gcd(x, y);
   x = x / d;
   y = y / d;
-
   return {x, y};
 }
 

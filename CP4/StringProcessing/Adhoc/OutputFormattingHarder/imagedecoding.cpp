@@ -17,7 +17,7 @@ vector<string> split(string& s, char delimiter) {
 }
 
 // Very bad checking system, any extra newline is considered WA
-// Make sure don't print extra newline after the last test case
+// Make sure don't print extra newline after the last test.txt case
 
 int main() {
     ios_base::sync_with_stdio(false);
