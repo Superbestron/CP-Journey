@@ -20,7 +20,7 @@ typedef vector<ll> vll;
 const ll INF = 1e18; // INF = 1e18, not 2^63-1 to avoid overflow
 
 class min_cost_max_flow {
-private:
+ private:
   int V;
   ll total_cost;
   vector<edge> EL;
@@ -29,15 +29,19 @@ private:
   vi last, vis;
 
   bool SPFA(int s, int t) { // SPFA to find augmenting path in residual graph
-    d.assign(V, INF); d[s] = 0; vis[s] = 1;
+    d.assign(V, INF);
+    d[s] = 0;
+    vis[s] = 1;
     queue<int> q({s});
     while (!q.empty()) {
-      int u = q.front(); q.pop(); vis[u] = 0;
+      int u = q.front();
+      q.pop();
+      vis[u] = 0;
       for (auto &idx : AL[u]) {                  // explore neighbors of u
         auto &[v, cap, flow, cost] = EL[idx];          // stored in EL[idx]
-        if ((cap-flow > 0) && (d[v] > d[u] + cost)) {      // positive residual edge
-          d[v] = d[u]+cost;
-          if(!vis[v]) q.push(v), vis[v] = 1;
+        if ((cap - flow > 0) && (d[v] > d[u] + cost)) {      // positive residual edge
+          d[v] = d[u] + cost;
+          if (!vis[v]) q.push(v), vis[v] = 1;
         }
       }
     }
@@ -47,13 +51,13 @@ private:
   ll DFS(int u, int t, ll f = INF) {             // traverse from s->t
     if ((u == t) || (f == 0)) return f;
     vis[u] = 1;
-    for (int &i = last[u]; i < (int)AL[u].size(); ++i) { // from last edge
+    for (int &i = last[u]; i < (int) AL[u].size(); ++i) { // from last edge
       auto &[v, cap, flow, cost] = EL[AL[u][i]];
-      if (!vis[v] && d[v] == d[u]+cost) {                      // in current layer graph
-        if (ll pushed = DFS(v, t, min(f, cap-flow))) {
-      total_cost += pushed * cost;
+      if (!vis[v] && d[v] == d[u] + cost) {                      // in current layer graph
+        if (ll pushed = DFS(v, t, min(f, cap - flow))) {
+          total_cost += pushed * cost;
           flow += pushed;
-          auto &[rv, rcap, rflow, rcost] = EL[AL[u][i]^1]; // back edge
+          auto &[rv, rcap, rflow, rcost] = EL[AL[u][i] ^ 1]; // back edge
           rflow -= pushed;
           vis[u] = 0;
           return pushed;
@@ -64,7 +68,7 @@ private:
     return 0;
   }
 
-public:
+ public:
   min_cost_max_flow(int initialV) : V(initialV), total_cost(0) {
     EL.clear();
     AL.assign(V, vi());
@@ -76,9 +80,9 @@ public:
   void add_edge(int u, int v, ll w, ll c, bool directed = true) {
     if (u == v) return;                          // safeguard: no self loop
     EL.emplace_back(v, w, 0, c);                 // u->v, cap w, flow 0, cost c
-    AL[u].push_back(EL.size()-1);                // remember this index
+    AL[u].push_back(EL.size() - 1);                // remember this index
     EL.emplace_back(u, 0, 0, -c);                // back edge
-    AL[v].push_back(EL.size()-1);                // remember this index
+    AL[v].push_back(EL.size() - 1);                // remember this index
     if (!directed) add_edge(v, u, w, c);         // add again in reverse
   }
 
@@ -94,10 +98,12 @@ public:
 };
 
 int main() {
-  int V, E, s, t; scanf("%d %d %d %d", &V, &E, &s, &t);
+  int V, E, s, t;
+  scanf("%d %d %d %d", &V, &E, &s, &t);
   min_cost_max_flow mf(V);
   for (int i = 0; i < E; ++i) {
-    int u, v, w, c; scanf("%d %d %d %d", &u, &v, &w, &c);
+    int u, v, w, c;
+    scanf("%d %d %d %d", &u, &v, &w, &c);
     mf.add_edge(u, v, w, c);                      // default: directed edge
   }
   pair<ll, ll> res = mf.mcmf(s, t);

@@ -4,76 +4,56 @@ using namespace std;
 typedef pair<int, int> ii;
 typedef vector<int> vi;
 
-vi match, vis;                                   // global variables
-vector<vi> AL;
+class MCBM {
+ private:
+  vi match, vis;                                   // global variables
+  vector<vi> AL;
+  unordered_set<int> freeV;
+  int V, matchings;
 
-int Aug(int L) {
+  int Aug(int L) {
     if (vis[L]) return 0;                          // L visited, return 0
     vis[L] = 1;
     for (auto &R : AL[L])
-        if ((match[R] == -1) || Aug(match[R])) {
-            match[R] = L;                              // flip status
-            return 1;                                  // found 1 matching
-        }
+      if ((match[R] == -1) || Aug(match[R])) {
+        match[R] = L;                              // flip status
+        return 1;                                  // found 1 matching
+      }
     return 0;                                      // no matching
-}
+  }
+ public:
+  MCBM(vector<vi> &AL, unordered_set<int> &freeV) : V(AL.size()), AL(AL), freeV(freeV) {
+    match.assign(V, -1);
+  }
+  int get_matchings() {
+    matchings = 0;
+    for (auto it = freeV.begin(); it != freeV.end();) {              // O(V+E)
+      vi candidates;
+      int L = *it;
+      for (auto &R : AL[L])
+        if (match[R] == -1)
+          candidates.push_back(R);
+      if ((int) candidates.size() > 0) {
+        ++matchings;
+        it = freeV.erase(it);                            // L is matched
+        int a = rand() % (int) candidates.size();     // randomize this
+        match[candidates[a]] = L;
+      } else it++;
+    }
+    for (auto &f : freeV) {                        // (in random order)
+      vis.assign(V, 0);                        // reset first
+      matchings += Aug(f);                              // try to match f
+    }
+    return matchings;
+  }
+};
 
 int main() {
-// inside int main()
-    // build bipartite graph with directed edge from left to right set
-
-/*
-  // Graph in Figure 4.37 can be built on the fly
-  // we know there are 6 vertices in this bipartite graph, left side are numbered 0,1,2, right side 3,4,5
-  int V = 6, Vleft = 3, set1[3] = {1,7,11}, set2[3] = {4,10,12};
-
-  // build the bipartite graph, only directed edge from left to right is needed
-  AL.assign(V, vi());
-  for (int i = 0; i < Vleft; ++i)
-    for (int j = 0; j < 3; ++j)
-      if (isprime(set1[i] + set2[j]))
-        AL[i].push_back(3 + j);
-*/
-
-    // For bipartite graph in Figure 4.38, V = 5, Vleft = 3 (vertex 0 unused)
-    // AL[0] = {} // dummy vertex, but you can choose to use this vertex
-    // AL[1] = {3, 4}
-    // AL[2] = {3}
-    // AL[3] = {}   // we use directed edges from left to right set only
-    // AL[4] = {}
-
-    int V = 10, Vleft = 5;                          // we ignore vertex 0
-    AL.assign(V, {});
-    AL[0] = {6, 7, 8};
-    AL[1] = {6, 8, 9};
-    AL[2] = {6};
-    AL[3] = {5, 7};
-    AL[4] = {7, 8, 9};
-
-    unordered_set<int> freeV;
-    for (int L = 0; L < Vleft; ++L)
-        freeV.insert(L);                             // initial assumption
-    match.assign(V, -1);
-    int MCBM = 0;
-    // Greedy pre-processing for trivial Augmenting Paths
-    // try commenting versus un-commenting this for-loop
-    for (int L = 0; L < Vleft; ++L) {              // O(V+E)
-        vi candidates;
-        for (auto &R : AL[L])
-            if (match[R] == -1)
-                candidates.push_back(R);
-        if ((int)candidates.size() > 0) {
-            ++MCBM;
-            freeV.erase(L);                            // L is matched
-            int a = rand()%(int)candidates.size();     // randomize this
-            match[candidates[a]] = L;
-        }
-    }                                              // for each free vertex
-    for (auto &f : freeV) {                        // (in random order)
-        vis.assign(Vleft, 0);                        // reset first
-        MCBM += Aug(f);                              // try to match f
-    }
-    cout << "Found " << MCBM << " matchings\n";    // the answer is 2 for Figure 4.38
-
-    return 0;
+  unordered_set<int> freeV;
+  vector<vi> AL;
+  int V = 20, Vleft = 10;
+  for (int L = 0; L < Vleft; ++L)
+    freeV.insert(L);                             // initial assumption
+  MCBM mcbm(AL, freeV);
+  cout << "Found " << mcbm.get_matchings() << " matchings\n";    // the answer is 2 for Figure 4.38
 }

@@ -71,6 +71,21 @@ public:
         }
         return mf;
     }
+
+  vi get_matches() {
+    vi match(V - 2, -1);
+    for (int i = 0; i < (V - 2) / 2; i++) {
+      for (int idx : AL[i]) {
+        auto &[v, cap, flow] = EL[idx];
+        if (flow == 1) {
+          match[i] = v;
+          match[v] = i;
+          break;
+        }
+      }
+    }
+    return match;
+  }
 };
 
 int main() {

@@ -11,9 +11,9 @@ class pseudoprime {
             BigInteger P = BigInteger.valueOf(p);
             BigInteger A = BigInteger.valueOf(a);
             if (!P.isProbablePrime(10) && (A.modPow(P, P).equals(A))) {
-                System.out.println("yes\n");
+                System.out.println("yes\N");
             } else {
-                System.out.println("no\n");
+                System.out.println("no\N");
             }
         }
     }

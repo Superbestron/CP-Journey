@@ -20,13 +20,13 @@ public class C1616C {
         int tc = sc.nextInt();
 
         while (tc-- > 0) {
-            int n = sc.nextInt();
-            int[] arr = new int[n];
-            for (int i = 0; i < n; i++) {
+            int N = sc.nextInt();
+            int[] arr = new int[N];
+            for (int i = 0; i < N; i++) {
                 arr[i] = sc.nextInt();
             }
 
-            if (n <= 2) {
+            if (N <= 2) {
                 System.out.println(0);
                 continue;
             }
@@ -51,7 +51,7 @@ public class C1616C {
                 }
             }
             ++best.len;
-            System.out.println(n - best.len);
+            System.out.println(N - best.len);
         }
 
     }

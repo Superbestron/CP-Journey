@@ -10,7 +10,7 @@ public class primes2 {
         Scanner sc = new Scanner(System.in);
         int T = sc.nextInt();
         int[] arr = {2, 8, 10, 16};
-        for (int t = 0; t < T; t++) {
+        for (int cost = 0; cost < T; cost++) {
             String s = sc.next();
             int num = 0;
             int denom = 0;

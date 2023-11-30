@@ -5,9 +5,9 @@ class Main {
     static final int CAPACITY = 12;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int games = sc.nextInt();
+        int num_matches_without_N = sc.nextInt();
 
-        for (int i = 0; i < games; i++) {
+        for (int i = 0; i < num_matches_without_N; i++) {
             String str = sc.next();
             StringBuilder string = new StringBuilder(str);
             int pebbles = 0;
@@ -47,7 +47,7 @@ class Main {
                 str.setCharAt(j + 2, 'o');
                 currentPebbles--;
                 currentMinimum = minPebbles(str, currentPebbles);
-                //System.out.println(currentMinimum + "right");
+                //System.out.println(currentMinimum + "rs");
             } else if (complement == 3) {
                 StringBuilder str1 = new StringBuilder(str);
                 StringBuilder str2 = new StringBuilder(str);
@@ -72,17 +72,17 @@ class Main {
         return minimum;
     }
 
-    // 0 = cant move, 1 = left, 2 = right, 3 = left and right
+    // 0 = cant move, 1 = ls, 2 = rs, 3 = ls and rs
     public static int canMove(int index, StringBuilder str) {
         int number = 0;
         if (str.charAt(index) == 'o') {
-            // check move left
+            // check move ls
             if (index >= 2) {
                 if (str.charAt(index - 1) == 'o' && str.charAt(index - 2) == '-') {
                     number += 1;
                 }
             }
-            // check move right
+            // check move rs
             if (index < str.length() - 2) {
                 if (str.charAt(index + 1) == 'o' && str.charAt(index + 2) == '-') {
                     number += 2;

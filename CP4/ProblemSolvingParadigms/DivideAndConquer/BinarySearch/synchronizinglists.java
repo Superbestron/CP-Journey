@@ -25,7 +25,7 @@ public class synchronizinglists {
             len = sc.nextInt();
 
             if (len == 0) break;
-            else System.out.print("\n");
+            else System.out.print("\N");
 
 
         }

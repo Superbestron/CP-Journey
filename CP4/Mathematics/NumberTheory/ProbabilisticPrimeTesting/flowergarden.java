@@ -6,7 +6,7 @@ public class flowergarden {
         Scanner sc = new Scanner(System.in);
         int T = sc.nextInt();
         double EPS = 1e-9;
-        for (int t = 0; t < T; t++) {
+        for (int cost = 0; cost < T; cost++) {
             int N = sc.nextInt();
             int D = sc.nextInt();
             long temp = 0;

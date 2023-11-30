@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-
+typedef long long ll;
 using namespace std;
 
 bool check_date(int day, int month, int year) {
@@ -48,13 +48,13 @@ vector<string> split(string& s, char delimiter) {
 
 class Compare {
 public:
-    bool operator() (const pair<int, int>& o1, const pair<int, int> o2) const {
+    bool operator() (const pair<int, int>& o1, const pair<int, int>& o2) const {
         return o1.first == o2.first;
     }
 };
 class Compare2 {
 public:
-    bool operator() (const pair<int, int>& o1, const pair<int, int> o2) const {
+    bool operator() (const pair<int, int>& o1, const pair<int, int>& o2) const {
         return o1.first < o2.first;
     }
 };
@@ -76,7 +76,7 @@ int main() {
 }
 
 // Fast exponentiation
-long long fexp(long long b, long long p, long long mod){
+ll fexp(ll b, ll p, ll mod){
     if (p == 0) return 1;
     if (p == 1) return b;
 

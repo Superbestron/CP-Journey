@@ -6,7 +6,7 @@ public class C1616B {
         int tc = sc.nextInt();
 
         while (tc-- > 0) {
-            int n = sc.nextInt();
+            int N = sc.nextInt();
             sc.nextLine();
             String str = sc.nextLine();
             char c = '{';
@@ -17,7 +17,7 @@ public class C1616B {
                     continue;
                 }
             }
-            while (i < n) {
+            while (i < N) {
                 char curr = str.charAt(i);
                 // if curr letter is greater than prev, cfm dw take
                 if (curr <= c) {
@@ -27,7 +27,7 @@ public class C1616B {
                 }
                 i++;
             }
-            if (i == 0) i = n;
+            if (i == 0) i = N;
 
             StringBuilder complement = new StringBuilder(str.substring(0, i));
             StringBuilder rev = new StringBuilder(complement).reverse();

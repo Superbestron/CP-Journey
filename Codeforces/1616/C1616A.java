@@ -8,10 +8,10 @@ public class C1616A {
         int tc = sc.nextInt();
 
         while (tc-- > 0) {
-            int n = sc.nextInt();
+            int N = sc.nextInt();
             Map<Integer, Integer> map = new HashMap<>();
 
-            while (n-- > 0) {
+            while (N-- > 0) {
                 int x = sc.nextInt();
                 if (x < 0) {
                     x = -x;

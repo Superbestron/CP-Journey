@@ -10,7 +10,7 @@ public class goldbach2 {
             BigInteger x = BigInteger.valueOf(i);
             arr[i - 1] = x.isProbablePrime(10);
         }
-        for (int t = 0; t < T; t++) {
+        for (int cost = 0; cost < T; cost++) {
             int N = sc.nextInt();
             List<String> ls = new ArrayList<>();
             if (N == 4) {

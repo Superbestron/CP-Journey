@@ -6,7 +6,7 @@ public class C1623A {
         int tc = sc.nextInt();
 
         while (tc-- > 0) {
-            int n = sc.nextInt();
+            int N = sc.nextInt();
             int m = sc.nextInt();
             int rb = sc.nextInt();
             int cb = sc.nextInt();
@@ -18,7 +18,7 @@ public class C1623A {
 
             while (rb != rd && cb != cd) {
                 curr_time++;
-                if (rb == n && dr == 1 || rb == 1 && dr == -1) {
+                if (rb == N && dr == 1 || rb == 1 && dr == -1) {
                     dr = -dr;
                 }
                 if (cb == m && dc == 1 || cb == 1 && dc == -1) {
