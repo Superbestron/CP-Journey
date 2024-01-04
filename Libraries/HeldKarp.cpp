@@ -13,8 +13,8 @@ int dp(int u, int mask) { // mask = free coordinates
   int m = mask;
   while (m) { // up to O(n)
     int two_pow_v = LSOne(m); // but this is fast
-    int v = __builtin_ctz(two_pow_v)+1; // offset v by +1
-    ans = min(ans, dist[u][v] + dp(v, mask^two_pow_v)); // keep the min
+    int v = __builtin_ctz(two_pow_v) + 1; // offset v by +1
+    ans = min(ans, dist[u][v] + dp(v, mask ^ two_pow_v)); // keep the min
     m -= two_pow_v;
   }
   return ans;

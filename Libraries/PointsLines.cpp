@@ -91,12 +91,15 @@ struct vec {
   double x, y; // name: `vec' is different from STL vector
   vec(double _x, double _y) : x(_x), y(_y) {}
 };
+
 vec toVec(const point &a, const point &b) {      // convert 2 points
   return {b.x - a.x, b.y - a.y};                  // to vector a->b
 }
+
 vec scale(const vec &v, double s) {              // s = [<1..1..>1]
   return {v.x * s, v.y * s};                      // shorter/eq/longer
 }                                                // return a new vec
+
 point translate(const point &p, const vec &v) {  // translate p
   return {p.x + v.x, p.y + v.y};                // according to v
 }                                                // return a new point

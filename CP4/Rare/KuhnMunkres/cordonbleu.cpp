@@ -3,6 +3,8 @@ using namespace std;
 
 typedef long long ll;
 const ll INF = 1e9;
+typedef tuple<int, int> ii;
+typedef vector<ii> vii;
 typedef vector<int> vi;
 typedef vector<ll> vll;
 
@@ -100,3 +102,35 @@ class KuhnMunkres {  // Hungarian algorithm to find the maximum value PERFECT ma
     return totalmatching;
   }
 };
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  int N, M;
+  cin >> N >> M;
+  vii bottles(N), bases(M);
+  for (auto &[x, y] : bottles) cin >> x >> y;
+  for (auto &[x, y] : bases) cin >> x >> y;
+  ii restaurant;
+  auto &[x, y] = restaurant;
+  cin >> x >> y;
+
+  int R = M + N - 1;
+  KuhnMunkres h(N, R);
+
+  for (int i = 0; i < N; i++) {
+    auto &[x1, y1] = bottles[i];
+    int bottle_to_rest_dist = abs(x1 - x) + abs(y1 - y);
+    for (int j = 0; j < M; j++) {
+      auto &[x2, y2] = bases[j];
+      int bottle_to_base_dist = abs(x2 - x1) + abs(y2 - y1);
+      h.add_edge(i, j, -(bottle_to_base_dist + bottle_to_rest_dist));
+    }
+    for (int j = M; j < M + N - 1; j++) {
+      h.add_edge(i, j, -(bottle_to_rest_dist * 2));
+    }
+  }
+
+  int ans = -h.max_matching();
+  cout << ans << '\n';
+}

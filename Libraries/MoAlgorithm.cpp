@@ -2,8 +2,7 @@
 using namespace std;
 typedef vector<int> vi;
 
-const int N = 1e6;
-int s = sqrt(N) + 1;
+int s;
 
 struct tquery {
   int idx, L, R;
@@ -14,59 +13,56 @@ bool operator<(const tquery &a, const tquery &b) {
   return a.R < b.R;
 }
 
-struct toutput {
-  int idx, value;
-};
+unordered_map<int, int> m;
 
-bool operator<(const toutput &a, const toutput &b) {
-  return a.idx < b.idx;
+void remove(int idx) {
+  m[idx]--;
+  if (m[idx] == 0) m.erase(idx);
 }
 
-void remove(int idx) {}
-void add(int idx) {}
-toutput get_answer() { return {0, 0}; }
+void add(int idx) {
+  m[idx]++;
+}
 
 vi answerAllQueries(vi &A, vector<tquery> &query) {
   int L = 0, R = -1;
-  vector<toutput> out;
+  vi out(query.size());
   sort(query.begin(), query.end());
   for (auto &q : query) {
     while (L > q.L) {
       L--;
-      add(L);
+      add(A[L]);
     }
     while (R < q.R) {
       R++;
-      add(R);
+      add(A[R]);
     }
-    while (L > q.L) {
-      remove(L);
+    while (L < q.L) {
+      remove(A[L]);
       L++;
     }
     while (R > q.R) {
-      remove(R);
-      R++;
+      remove(A[R]);
+      R--;
     }
-    out[q.idx] = get_answer();
+    out[q.idx] = m.size();
   }
-  sort(out.begin(), out.end());
-  vi ans;
-  for (auto &t : out) ans.push_back(t.value);
-  return ans;
+  return out;
 }
 
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
-  int V; cin >> V;
-  int srt = sqrt(V), ans = 1e9;
-  for (int i = 1; i <= srt; i++) {
-    for (int j = 1; j <= srt; j++) {
-      int prod = i * j;
-      if (V % prod) continue;
-      int side = V / prod;
-      ans = min(ans, 2 * prod + 2 * i * side + 2 * j * side);
-    }
+  int n, q; cin >> n >> q;
+  s = sqrt(n) + 1;
+  vector<int> A(n);
+  vector<tquery> queries;
+  for (int &i : A) cin >> i;
+  for (int i = 0; i < q; i++) {
+    int L, R;
+    cin >> L >> R;
+    queries.push_back(tquery{i, L, R});
   }
-  cout << ans << '\n';
+  vi output(answerAllQueries(A, queries));
+  for (int i : output) cout << i << '\n';
 }

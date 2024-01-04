@@ -72,6 +72,7 @@ public:
         return mf;
     }
 
+  // Only for 1 to 1 matching
   vi get_matches() {
     vi match(V - 2, -1);
     for (int i = 0; i < (V - 2) / 2; i++) {
