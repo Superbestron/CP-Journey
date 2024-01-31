@@ -1,8 +1,5 @@
-// Union-Find Disjoint Sets Library written in OOP manner, using both path compression and union by rank heuristics
-
 #include <bits/stdc++.h>
 using namespace std;
-
 typedef vector<int> vi;
 
 class UnionFind {                                // OOP style

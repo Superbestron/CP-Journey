@@ -2,13 +2,11 @@
 using namespace std;
 
 #define ROW_SIZE 4 // ROW_SIZE is a matrix of 4 x 4
-#define PUZZLE (ROW_SIZE*ROW_SIZE)
+#define PUZZLE (ROW_SIZE * ROW_SIZE)
 #define X 15
 #define MAX_MOVE_COUNT 45
 
-int p[PUZZLE];
-int blank;
-int lim;
+int p[PUZZLE], blank, lim;
 int dr[] = {0, -1, 0, 1}; // E,N,W,S
 int dc[] = {1, 0, -1, 0}; // R,U,L,D
 int pred[MAX_MOVE_COUNT + 1];
@@ -39,6 +37,7 @@ bool DFS(int g, int h, int k) {
   int i = k / ROW_SIZE, j = k % ROW_SIZE, d, new_i, new_j;
 
   for (d = 0; d < 4; d++) {
+    // Prevent the blank from going back the same direction it came from
     if (g != 0 && d == (pred[g] ^ 2)) continue;
     new_i = i + dr[d];
     new_j = j + dc[d];

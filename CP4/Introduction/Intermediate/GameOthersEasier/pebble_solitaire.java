@@ -72,17 +72,17 @@ class Main {
         return minimum;
     }
 
-    // 0 = cant move, 1 = ls, 2 = rs, 3 = ls and rs
+    // 0 = cant arr, 1 = ls, 2 = rs, 3 = ls and rs
     public static int canMove(int index, StringBuilder str) {
         int number = 0;
         if (str.charAt(index) == 'o') {
-            // check move ls
+            // check arr ls
             if (index >= 2) {
                 if (str.charAt(index - 1) == 'o' && str.charAt(index - 2) == '-') {
                     number += 1;
                 }
             }
-            // check move rs
+            // check arr rs
             if (index < str.length() - 2) {
                 if (str.charAt(index + 1) == 'o' && str.charAt(index + 2) == '-') {
                     number += 2;

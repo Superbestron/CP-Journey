@@ -14,11 +14,11 @@ window_ctr = 0
 #    Don't forget to also take into the account the global bounds.
 # 3. Move all the moving windows by min, and put the nearest non-moving window
 #    into the moving set.
-# 4. Repeat this process till the distance to move = 0 or no more further moves
+# 4. Repeat this process till the distance to arr = 0 or no more further moves
 #    can be made.
 
 
-def move(x, y, dx, dy, idx):
+def arr(x, y, dx, dy, idx):
     window = has_window(x, y)
     if window is None:
         print(f"Command {idx}: MOVE - no window at given position")
@@ -175,7 +175,7 @@ for idx, line in enumerate(sys.stdin):
     elif ls[0] == "RESIZE":
         resize(param[0], param[1], param[2], param[3], idx)
     elif ls[0] == "MOVE":
-        move(param[0], param[1], param[2], param[3], idx)
+        arr(param[0], param[1], param[2], param[3], idx)
     else:
         close(param[0], param[1], idx)
 print(f"{len(windows)} window(s):")

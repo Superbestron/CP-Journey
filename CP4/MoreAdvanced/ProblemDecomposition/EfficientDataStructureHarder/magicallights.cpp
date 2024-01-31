@@ -6,28 +6,27 @@ typedef long long ll;                            // for extra flexibility
 typedef vector<ll> vll;
 typedef vector<int> vi;
 
-
 // Important note: 1-based indexing
 class FenwickTree {                              // index 0 is not used
  private:
   vll ft;                                        // internal FT is an array
  public:
-  explicit FenwickTree(int m) { ft.assign(m+1, 0); }      // create an empty FT
+  explicit FenwickTree(int m) { ft.assign(m + 1, 0); }      // create an empty FT
 
   void build(const vll &f) {
-    int m = (int)f.size()-1;                     // note f[0] is always 0
-    ft.assign(m+1, 0);
+    int m = (int) f.size() - 1;                     // note f[0] is always 0
+    ft.assign(m + 1, 0);
     for (int i = 1; i <= m; ++i) {               // O(m)
       ft[i] += f[i];                             // add this value
-      if (i+LSOne(i) <= m)                       // i has parent
-        ft[i+LSOne(i)] += ft[i];                 // add to that parent
+      if (i + LSOne(i) <= m)                       // i has parent
+        ft[i + LSOne(i)] += ft[i];                 // add to that parent
     }
   }
 
   explicit FenwickTree(const vll &f) { build(f); }        // create FT based on f
 
   FenwickTree(int m, const vi &s) {              // create FT based on s
-    vll f(m+1, 0);
+    vll f(m + 1, 0);
     for (int i : s) ++f[i];     // do the conversion first in O(n)
     build(f);                                    // in O(m)
   }
@@ -39,30 +38,30 @@ class FenwickTree {                              // index 0 is not used
     return sum;
   }
 
-  ll rsq(int i, int j) { return rsq(j) - rsq(i-1); } // inc/exclusion
+  ll rsq(int i, int j) { return rsq(j) - rsq(i - 1); } // inc/exclusion
 
   // updates value of the i-th element by v (v can be +ve/inc or -ve/dec)
   void update(int i, ll v) {
-    for (; i < (int)ft.size(); i += LSOne(i))
+    for (; i < (int) ft.size(); i += LSOne(i))
       ft[i] += v;
   }
 
   int select(ll k) {                             // O(log m)
     int p = 1;
-    while (p*2 < (int)ft.size()) p *= 2;
+    while (p * 2 < (int) ft.size()) p <<= 1;
     int i = 0;
     while (p) {
-      if (k > ft[i+p]) {
-        k -= ft[i+p];
+      if (k > ft[i + p]) {
+        k -= ft[i + p];
         i += p;
       }
-      p /= 2;
+      p >>= 1;
     }
-    return i+1;
+    return i + 1;
   }
 };
 
-vector<vector<int>> AL;
+vector<vi> AL;
 vector<pair<int, int>> entry_exit;
 int ctr = 1;
 
@@ -82,7 +81,7 @@ int main() {
   cin.tie(nullptr);
   int N, Q, P;
   cin >> N >> Q;
-  vector<int> C(N);
+  vi C(N);
   vector<vector<ll>> counts(100, vector<ll>(N + 1));
   vector<FenwickTree> v;
   for (int i = 0; i < N; i++) {
@@ -110,7 +109,8 @@ int main() {
   }
 
   for (int i = 0; i < Q; i++) {
-    int K, X; cin >> K >> X;
+    int K, X;
+    cin >> K >> X;
     X--;
     int entry = entry_exit[X].first;
     int exit = entry_exit[X].second;

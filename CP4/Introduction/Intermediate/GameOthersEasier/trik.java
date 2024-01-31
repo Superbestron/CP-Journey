@@ -8,14 +8,14 @@ class trik {
         int pos = 1;
 
         for (int i = 0; i < length; i++) {
-            char move = moves.charAt(i);
-            if (move == 'A') {
+            char arr = moves.charAt(i);
+            if (arr == 'A') {
                 if (pos == 1) {
                     pos = 2;
                 } else if (pos == 2) {
                     pos = 1;
                 }
-            } else if (move == 'B') {
+            } else if (arr == 'B') {
                 if (pos == 2) {
                     pos = 3;
                 } else if (pos == 3) {

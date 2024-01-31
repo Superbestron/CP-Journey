@@ -43,11 +43,11 @@ int modPow(ll b, int p, int m) {                  // assume 0 <= b < m
   return ans;                                    // ans always in [0..m-1]
 }
 
-int extEuclid(int a, int b, int &x, int &y) {    // pass x and y by ref
-  int xx = y = 0;
-  int yy = x = 1;
+ll extEuclid(ll a, ll b, ll &x, ll &y) {    // pass x and y by ref
+  ll xx = y = 0;
+  ll yy = x = 1;
   while (b) {                                    // repeats until b == 0
-    int q = a / b;
+    ll q = a / b;
     tie(a, b) = tuple(b, a % b);
     tie(x, xx) = tuple(xx, x - q * xx);
     tie(y, yy) = tuple(yy, y - q * yy);
@@ -55,9 +55,9 @@ int extEuclid(int a, int b, int &x, int &y) {    // pass x and y by ref
   return a;                                      // returns gcd(a, b)
 }
 
-int modInverse(int b, int m) {                   // returns b^(-1) (mod m)
-  int x, y;
-  int d = extEuclid(b, m, x, y);                 // to get b*x + m*y == d
+ll modInverse(ll b, int m) {                   // returns b^(-1) (mod m)
+  ll x, y;
+  ll d = extEuclid(b, m, x, y);                 // to get b*x + m*y == d
   if (d != 1) return -1;                         // to indicate failure
   // b*x + m*y == 1, now apply (mod m) to get b*x == 1 (mod m)
   return mod(x, m);

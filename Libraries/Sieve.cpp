@@ -7,6 +7,20 @@ ll sieve_size;
 bitset<10000010> bs; // 10^7 is the rough limit
 vll p; // compact list of primes
 
+vll getDivisors(ll n) {
+  vll ans;
+  for (int i = 1; i <= sqrt(n); i++) {
+    if (n % i == 0) {
+      if (n / i == i) ans.push_back(i);
+      else {
+        ans.push_back(i);
+        ans.push_back(n / i);
+      }
+    }
+  }
+  return ans;
+}
+
 vll primeFactors(ll N) { // pre-condition, N >= 1
   vll factors;
   for (int i = 0; (i < (int) p.size()) && (p[i] * p[i] <= N); ++i)

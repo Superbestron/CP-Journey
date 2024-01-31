@@ -8,7 +8,7 @@ struct Matrix { ll mat[MAX_N][MAX_N]; };         // we return a 2D array
 
 ll mod(ll a, ll m) { return ((a % m) + m) % m; }     // ensure positive answer
 
-Matrix matMul(Matrix a, Matrix b) {              // normally O(n^3)
+Matrix matMul(Matrix &a, Matrix &b) {              // normally O(n^3)
   Matrix ans;                                    // but O(1) as n = 2
   for (auto &i : ans.mat)
     for (long long &j : i)

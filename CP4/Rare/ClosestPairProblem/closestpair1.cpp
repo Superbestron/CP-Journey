@@ -54,7 +54,7 @@ pair<point, point> closest_pair() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
-  long double x, y;
+  double x, y;
   while (cin >> n) {
     if (n == 0) break;
     P.clear();
