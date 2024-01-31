@@ -15,3 +15,4 @@ I started trying out Competitive Programming in December 2022 and I'm excited to
 **Libraries** - Starter code for either Competitive Programming or interviews. <br>
 **Meta Hacker Cup 2023** - Round 1 and 2. <br>
 **CodeVita 2023** - Round 1 and 2. <br>
+**CS3233** - AY2023/24 Kattis Problem Set and Weekly Mini Contests. <br>
