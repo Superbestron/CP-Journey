@@ -1,50 +1,54 @@
 #include <bits/stdc++.h>
-
 using namespace std;
+
 const double EPS = 1e-9;
-pair<double, double> sprinkler[10000];
+
+struct sp {
+  int x, r;
+  double x_l, x_r;
+};
+
+sp sprinkler[10010];
+
+bool cmp(sp a, sp b) {
+  if (fabs(a.x_l - b.x_l) > EPS) return a.x_l < b.x_l;
+  else return a.x_r > b.x_r;
+}
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, l, w, x, r;
-    auto cmp = [](pair<double, double>& p1, pair<double, double>& p2) {
-        if (fabs(p1.first - p2.first) < EPS) return p1.second > p2.second;
-        else return p1.first < p2.first;
-    };
-    while (cin >> n >> l >> w) {
-        for (int i = 0; i < n; i++) {
-            cin >> x >> r;
-            if (2 * r >= w) {
-                double dx = sqrt(r * r - (w / 2.0) * (w / 2.0));
-                sprinkler[i] = make_pair(x - dx, x + dx);
-            } else {
-                sprinkler[i] = make_pair(x, x);
-            }
-        }
-        sort(sprinkler, sprinkler + n, cmp);
-        bool possible = true;
-        double covered = 0;
-        int ans = 0;
-        for (int i = 0; (i < n) && possible; i++) {
-            if (covered > l) break;
-            if (sprinkler[i].second < covered + EPS) continue;
-            if (sprinkler[i].first < covered + EPS) {
-                double max_r = sprinkler[i].second;
-                int max_id = i;
-                for (int j = i + 1; (j < n) && (sprinkler[j].first < covered + EPS); j++) {
-                    if (sprinkler[j].second > max_r) {
-                        max_r = sprinkler[j].second;
-                        max_id = j;
-                    }
-                }
-                ans++;
-                covered = max_r;
-                i = max_id;
-            } else possible = false;
-        }
-        if (!possible || (covered < l)) cout << -1;
-        else cout << ans;
-        cout << '\n';
+  // freopen("in.txt", "r", stdin);
+  int n, l, w;
+  while (scanf("%d %d %d", &n, &l, &w) != EOF) {
+    for (int i = 0; i < n; ++i) {
+      scanf("%d %d", &sprinkler[i].x, &sprinkler[i].r);
+      if (2 * sprinkler[i].r >= w) {
+        double d_x = sqrt((double) sprinkler[i].r * sprinkler[i].r - (w / 2.0) * (w / 2.0));
+        sprinkler[i].x_l = sprinkler[i].x - d_x; // sort based on smaller x_l and then larger x_r
+        sprinkler[i].x_r = sprinkler[i].x + d_x;
+      } else
+        sprinkler[i].x_l = sprinkler[i].x_r = sprinkler[i].x; // to make this unselected...
     }
+
+    sort(sprinkler, sprinkler + n, cmp);         // sort the sprinklers
+    bool possible = true;
+    double covered = 0.0;
+    int ans = 0;
+    for (int i = 0; (i < n) && possible; ++i) {
+      if (covered > l) break;                  // done
+      if (sprinkler[i].x_r < covered + EPS) continue; // inside prev interval
+      if (sprinkler[i].x_l < covered + EPS) {    // can cover
+        double max_r = -1.0;
+        for (; i < n && (sprinkler[i].x_l < covered + EPS); ++i)
+          max_r = max(max_r, sprinkler[i].x_r);
+        ++ans;
+        covered = max_r;                       // jump here
+        i--;
+      } else
+        possible = false;
+    }
+    if (!possible || (covered < l)) printf("-1\n");
+    else printf("%d\n", ans);
+  }
+
+  return 0;
 }

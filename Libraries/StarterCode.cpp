@@ -32,7 +32,7 @@ bool check_date(int day, int month, int year) {
     return true;
 }
 
-vector<string> split(string& s, char delimiter) {
+vector<string> split(const string& s, char delimiter) {
     size_t pos;
     string token;
     vector<string> arr;

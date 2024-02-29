@@ -15,7 +15,6 @@ class max_flow {
   vector<vi> AL;
   vi d, last;
   vector<ii> p;
-  // map<ii, int> edges;
 
   bool BFS(int s, int t) {                       // find augmenting path
     d.assign(V, -1);
@@ -75,36 +74,6 @@ class max_flow {
     return mf;
   }
 
-  // Only for 1 to 1 matching
-  vi get_matches() {
-    vi match(V - 2, -1);                         // Assumption is that indices 0 - (V - 3) refers to actual indices of
-    for (int i = 0; i < (V - 2) / 2; i++) {      // nodes while (V - 2) and (V - 1) refers to indices of source/sink
-      for (int idx : AL[i]) {
-        auto &[v, cap, flow] = EL[idx];
-        if (flow == 1) {
-          match[i] = v;
-          match[v] = i;
-          break;
-        }
-      }
-    }
-    return match;
-  }
-
-//  void update_edge(int u, int v, ll w) {
-//    if (u == v) return;
-//    if (!edges.count({u, v})) {
-//      add_edge(u, v, w, false);
-//      return;
-//    }
-//    int uv_edge_idx = edges[{u, v}];
-//    auto &[node1, cap1, flow1] = EL[uv_edge_idx];
-//    cap1 += w;
-//    int vu_edge_idx = edges[{v, u}];
-//    auto &[node2, cap2, flow2] = EL[vu_edge_idx];
-//    cap2 += w;
-//  }
-
   vi find_min_cut(int s) {
     vi output;
     vi vis(V, -1);
@@ -127,7 +96,15 @@ class max_flow {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
-  max_flow mf(10);
-  mf.add_edge(5, 6, 3);
-  cout << mf.dinic(0, 9) << '\n';
+  int n, m, s, t, u, v, w;
+  cin >> n >> m >> s >> t;
+  max_flow mf(n);
+  for (int i = 0; i < m; i++) {
+    cin >> u >> v >> w;
+    mf.add_edge(u, v, w);
+  }
+  mf.dinic(s, t);
+  vi output = mf.find_min_cut(s);
+  cout << output.size() << '\n';
+  for (int i : output) cout << i << '\n';
 }

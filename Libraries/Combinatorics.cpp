@@ -21,10 +21,6 @@ const int p = 1e9 + 7;                             // p is a prime > MAX_N
 vll primes;
 ll fact[MAX_N], invFact[MAX_N];
 
-ll mod(ll a, int m) {                            // returns a (mod m)
-  return ((a % m) + m) % m;                        // ensure positive answer
-}
-
 ll modMultiply(ll a, ll b, ll c) {
   ll x = 0, y = a % c;
   while (b) {
@@ -35,7 +31,11 @@ ll modMultiply(ll a, ll b, ll c) {
   return x % c;
 }
 
-int modPow(ll b, int p, int m) {                  // assume 0 <= b < m
+ll mod(ll a, int m) {                            // returns a (mod m)
+  return ((a % m) + m) % m;                        // ensure positive answer
+}
+
+ll modPow(ll b, int p, int m) {                  // assume 0 <= b < m
   if (p == 0) return 1;
   ll ans = modPow(b, p / 2, m);                    // this is O(log p)
   ans = mod(ans * ans, m);                         // double it first
