@@ -7,15 +7,26 @@ typedef vector<int> vi;
 typedef pair<int, int> ii;
 
 const ll INF = 1e18;                             // large enough
-set<edge> output;
 
 class max_flow {
- public:
+ private:
   int V;
-  vector<edge> EL;
+  vector<edge> EL, output;
   vector<vi> AL;
   vi d, last;
   vector<ii> p;
+
+  void gen_output() {
+    set<ii> st;
+    for (int u = 0; u < V; u++) {
+      for (int idx : AL[u]) {
+        auto &[v, cap, flow] = EL[idx];
+        if (st.count({min(u, v), max(u, v)})) continue;
+        st.emplace(min(u, v), max(u, v));
+        output.emplace_back(u, v, flow);
+      }
+    }
+  }
 
   bool BFS(int s, int t) {                       // find augmenting path
     d.assign(V, -1); d[s] = 0;
@@ -48,6 +59,7 @@ class max_flow {
     return 0;
   }
 
+ public:
   max_flow(int initialV) : V(initialV) {
     EL.clear();
     AL.assign(V, vi());
@@ -63,17 +75,6 @@ class max_flow {
     AL[v].push_back(EL.size()-1);                // remember this index
   }
 
-  void get_output(int t) {
-    for (int idx : AL[t]) {
-      auto &[v, w, f] = EL[idx];
-      if (output.count({v, t, -f})) continue;
-      if (f < 0) {
-        output.emplace(v, t, -f);
-        get_output(v);
-      }
-    }
-  }
-
   ll dinic(int s, int t) {
     ll mf = 0;                                   // mf stands for max_flow
     while (BFS(s, t)) {                          // an O(V^2*E) algorithm
@@ -81,8 +82,12 @@ class max_flow {
       while (ll f = DFS(s, t))                   // exhaust blocking flow
         mf += f;
     }
-    get_output(t);
+    gen_output();
     return mf;
+  }
+
+  vector<edge> get_output() {
+    return output;
   }
 };
 
@@ -97,6 +102,7 @@ int main() {
     mf.add_edge(u, v, c);
   }
   ll ans = mf.dinic(s, t);
+  vector<edge> output = mf.get_output();
   cout << n << ' ' << ans << ' ' << output.size() << '\n';
   for (auto &[u, v, f] : output) cout << u << ' ' << v << ' ' << f << '\n';
 }

@@ -10,7 +10,7 @@ int N, num_scc = 0;
 
 void kosaraju(int u, int pass) {
   dfs_num[u] = VISITED;
-  vector<int>& neighbours = (pass == 1) ? AL[u] : AL_T[u];
+  vi &neighbours = (pass == 1) ? AL[u] : AL_T[u];
   for (auto& v : neighbours) {
     if (dfs_num[v] == UNVISITED) kosaraju(v, pass);
   }

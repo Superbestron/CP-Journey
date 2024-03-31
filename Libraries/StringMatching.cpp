@@ -1,8 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef long long ll;
 
 const int MAX_N = 200010;
-
+const int p = 131;                               // p and M are
+const int M = 1e9 + 7;                             // relatively prime
 char T[MAX_N], P[MAX_N];                         // T = text, P = pattern
 int n, m;                                        // n = |T|, m = |P|
 
@@ -35,7 +37,7 @@ int kmpSearch() {                               // similar as above
   return freq;
 }
 
-// KMP-variant, find minimum lexicographic rotation of string
+// Booth's algorithm KMP-variant, find minimum lexicographic rotation of string
 int least_rotation(const char s[]) {
 //  int n = s.size();
   vector<int> f(2 * n, -1);
@@ -57,10 +59,6 @@ int least_rotation(const char s[]) {
 }
 
 // Rabin-Karp's algorithm specific code
-typedef long long ll;
-
-const int p = 131;                               // p and M are
-const int M = 1e9 + 7;                             // relatively prime
 
 int Pow[MAX_N];                                  // to store p^i % M
 int h[MAX_N];                                    // to store prefix hashes
@@ -98,8 +96,7 @@ int modInverse(int b, int m) {                   // returns b^(-1) (mod m)
 
 int hash_fast(int L, int R) {                    // O(1) hash of any substr
   if (L == 0) return h[R];                       // h is the prefix hashes
-  int ans = 0;
-  ans = ((h[R] - h[L - 1]) % M + M) % M;           // compute differences
+  int ans = ((h[R] - h[L - 1]) % M + M) % M;           // compute differences
   ans = ((ll) ans * modInverse(Pow[L], M)) % M;   // remove P[L]^-1 (mod M)
   return ans;
 }

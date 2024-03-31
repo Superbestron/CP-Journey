@@ -9,13 +9,25 @@ typedef pair<int, int> ii;
 const ll INF = 1e18;                             // large enough
 
 class max_flow {
- public:
+ private:
   int V;
-  vector<edge> EL;
+  vector<edge> EL, output;
   vector<vi> AL;
   vi d, last;
   vector<ii> p;
-  // map<ii, int> edges;
+  map<ii, int> edges;
+
+  void gen_output() {
+    set<ii> st;
+    for (int u = 0; u < V; u++) {
+      for (int idx : AL[u]) {
+        auto &[v, cap, flow] = EL[idx];
+        if (st.count({min(u, v), max(u, v)})) continue;
+        st.emplace(min(u, v), max(u, v));
+        output.emplace_back(u, v, abs(flow));
+      }
+    }
+  }
 
   bool BFS(int s, int t) {                       // find augmenting path
     d.assign(V, -1);
@@ -50,6 +62,7 @@ class max_flow {
     return 0;
   }
 
+ public:
   max_flow(int initialV) : V(initialV) {
     EL.clear();
     AL.assign(V, vi());
@@ -72,6 +85,7 @@ class max_flow {
       while (ll f = DFS(s, t))                   // exhaust blocking flow
         mf += f;
     }
+    gen_output();
     return mf;
   }
 
@@ -91,35 +105,39 @@ class max_flow {
     return match;
   }
 
-//  void update_edge(int u, int v, ll w) {
-//    if (u == v) return;
-//    if (!edges.count({u, v})) {
-//      add_edge(u, v, w, false);
-//      return;
-//    }
-//    int uv_edge_idx = edges[{u, v}];
-//    auto &[node1, cap1, flow1] = EL[uv_edge_idx];
-//    cap1 += w;
-//    int vu_edge_idx = edges[{v, u}];
-//    auto &[node2, cap2, flow2] = EL[vu_edge_idx];
-//    cap2 += w;
-//  }
+  void update_edge(int u, int v, ll w) {
+    if (u == v) return;
+    if (!edges.count({u, v})) {
+      add_edge(u, v, w, false);
+      return;
+    }
+    int uv_edge_idx = edges[{u, v}];
+    auto &[node1, cap1, flow1] = EL[uv_edge_idx];
+    cap1 += w;
+    int vu_edge_idx = edges[{v, u}];
+    auto &[node2, cap2, flow2] = EL[vu_edge_idx];
+    cap2 += w;
+  }
 
   vi find_min_cut(int s) {
-    vi output;
+    vi ans;
     vi vis(V, -1);
     vis[s] = 0;
     queue<int> q({s});
     while (!q.empty()) {
       int u = q.front();
       q.pop();
-      output.push_back(u);
+      ans.push_back(u);
       for (auto &idx : AL[u]) {                  // explore neighbors of u
         auto &[v, cap, flow] = EL[idx];          // stored in EL[idx]
         if (vis[v] != -1) continue;
         if ((cap - flow > 0)) vis[v] = vis[u] + 1, q.push(v);
       }
     }
+    return ans;
+  }
+
+  vector<edge> get_output() {
     return output;
   }
 };

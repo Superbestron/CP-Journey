@@ -1,10 +1,11 @@
 #include <bits/stdc++.h>
 #define LSOne(S) S & (-S)
 using namespace std;
+typedef vector<int> vi;
 
-vector<vector<int>> memo;
-vector<vector<int>> dist;
+vector<vi> memo, dist;
 
+// Assumes start from idx 0, visits all other indices 1 to n, then returns to 0.
 int dp(int u, int mask) { // mask = free coordinates
   if (mask == 0) return dist[u][0]; // close the tour
   int &ans = memo[u][mask];

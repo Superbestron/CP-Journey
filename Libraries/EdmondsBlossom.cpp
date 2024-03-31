@@ -67,7 +67,7 @@ class Blossom {
   };
 
  public:
-  Blossom(vector<vi> &AL) : graph(AL), n(AL.size()), timer(-1) {
+  Blossom(vector<vi> &AL) : n(AL.size()), timer(-1), graph(AL) {
     mate.assign(n, -1);
     label.assign(n, 0);
     parent.assign(n, 0);

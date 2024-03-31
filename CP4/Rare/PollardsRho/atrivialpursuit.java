@@ -9,15 +9,15 @@ import java.util.StringTokenizer;
 class Main {
     static class FastScanner {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer("");
+        StringTokenizer rmqSt = new StringTokenizer("");
 
         String next() {
-            while (!st.hasMoreTokens())
+            while (!rmqSt.hasMoreTokens())
                 try {
-                    st = new StringTokenizer(br.readLine());
+                    rmqSt = new StringTokenizer(br.readLine());
                 } catch (IOException e) {
                 }
-            return st.nextToken();
+            return rmqSt.nextToken();
         }
 
         int nextInt() {

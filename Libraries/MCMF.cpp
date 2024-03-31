@@ -1,14 +1,3 @@
-// This code uses new C++17 structured binding
-// use this compiler setting "g++ -O2 -std=gnu++17 {cpp17file}"
-
-// Disclaimer: This code is a hybrid between old CP1-2-3 implementation of
-// Edmonds Karp's algorithm -- re-written in OOP fashion and the fast
-// Dinic's algorithm implementation by
-// https://github.com/jaehyunp/stanfordacm/blob/master/code/Dinic.cc
-// This code is written in modern C++17 standard
-
-// We replace BFS with SPFA
-
 #include <bits/stdc++.h>
 using namespace std;
 

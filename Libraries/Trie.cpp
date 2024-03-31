@@ -5,7 +5,9 @@ struct vertex {
   char alphabet;
   bool exist;
   vector<vertex *> child;
-  vertex(char a) : alphabet(a), exist(false) { child.assign(26, nullptr); }
+  vertex(char a) : alphabet(a), exist(false) {
+    child.assign(26, nullptr); // assumption is only UPPER
+  }
 };
 
 class Trie {                                     // this is TRIE

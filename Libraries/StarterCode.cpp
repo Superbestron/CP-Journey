@@ -87,6 +87,16 @@ ll fexp(ll b, ll p, ll mod){
     }
 }
 
+// Start measuring time
+auto start = std::chrono::high_resolution_clock::now();
+
+// Stop measuring time
+auto end = std::chrono::high_resolution_clock::now();
+// Calculate duration
+auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+// Output the duration
+std::cout << "Execution time: " << duration.count() << " milliseconds" << '\n';
+
 // Important points
 // 1. String comparison
 // if s1 and s2 is std::string
