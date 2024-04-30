@@ -78,6 +78,8 @@ const int MAX_N = 450010;                        // can go up to 450K chars
 
 char T[MAX_N];
 
+// Find most common substring of length 1, 2, ..., n
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);

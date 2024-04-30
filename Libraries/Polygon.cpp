@@ -1,5 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef pair<int, int> ii;
+typedef vector<ii> vii;
+typedef long long ll;
+typedef long double ld;
 
 const double EPS = 1e-9;
 
@@ -7,10 +11,17 @@ double DEG_to_RAD(double d) { return d * M_PI / 180.0; }
 
 double RAD_to_DEG(double r) { return r * 180.0 / M_PI; }
 
+// struct point_i { int x, y; };                 // minimalist form
+struct point_i {
+  int x, y;                                      // default
+  point_i() { x = y = 0; }                       // default
+  point_i(int _x, int _y) : x(_x), y(_y) {}      // user-defined
+};
+
 struct point {
-  double x, y;   // only used if more precision is needed
-  point() { x = y = 0.0; }                      // default constructor
-  point(double _x, double _y) : x(_x), y(_y) {}        // user-defined
+  double x, y;                                   // only used if more precision is needed
+  point() { x = y = 0.0; }                       // default constructor
+  point(double _x, double _y) : x(_x), y(_y) {}  // user-defined
   bool operator==(point other) const {
     return (fabs(x - other.x) < EPS && (fabs(y - other.y) < EPS));
   }
@@ -20,7 +31,7 @@ struct point {
 };
 
 struct vec {
-  double x, y;  // name: `vec' is different from STL vector
+  double x, y;  // name: 'vec' is different from STL vector
   vec(double _x, double _y) : x(_x), y(_y) {}
   vec(point p1, point p2) : x(p2.x - p1.x), y(p2.y - p1.y) {}
 };
@@ -71,10 +82,10 @@ double area_alternative(const vector<point> &P) {
   return fabs(ans) / 2.0;
 }
 
-// note: to accept collinear points, we have to change the `> 0'
+// note: to accept collinear points, we have to change the '> 0'
 // returns true if point r is on the left side of line pq
 bool ccw(point p, point q, point r) {
-  return cross(toVec(p, q), toVec(p, r)) > 0;
+  return cross(toVec(p, q), toVec(p, r)) >= 0;
 }
 
 // returns true if point r is on the same line as the line pq
@@ -169,6 +180,7 @@ vector<point> CH_Graham(vector<point> &Pts) {    // overall O(n log n)
   return S;                                      // return the result
 }
 
+// Last point does not have to be first point
 vector<point> CH_Andrew(vector<point> &Pts) {    // overall O(n log n)
   int n = Pts.size(), k = 0;
   vector<point> H(2 * n);
@@ -185,19 +197,19 @@ vector<point> CH_Andrew(vector<point> &Pts) {    // overall O(n log n)
   return H;
 }
 
-double cal_tri_area(point a, point b, point c) {
+double cal_tri_area(point &a, point &b, point &c) {
   return fabs(cross(vec(a, b), vec(a, c)) / 2.0);
 }
 
 // Rotating Caliper Algorithm to Get All AntiPodal Points
 // Here P has no repeated vertex at the back
-vector<pair<int, int>> GetAllAntiPodalPairs(vector<point> &P) {
+vii ShamosAlgorithm(vector<point> &P) {
   int n = P.size();
 
   if (n == 1) return {};
   if (n == 2) return {{0, 1}};
 
-  vector<pair<int, int>> ans;
+  vii ans;
   int i0 = n - 1;
   int i = 0;
   int j = i + 1;
@@ -226,6 +238,68 @@ vector<pair<int, int>> GetAllAntiPodalPairs(vector<point> &P) {
     }
   }
   return ans;
+}
+
+// last point doesn't have to be first point
+pair<point, point> closest_pair(vector<point> &P, int n) {
+  sort(P.begin(), P.end());
+  set<point> s;
+  pair<point, point> ans;
+
+  double best_dist = 1e18;
+  for (int i = 0, j = 0; i < n; ++i) {
+    double d = best_dist;
+    while (fabs(P[i].x - P[j].x) - d > EPS) {
+      s.erase({P[j].y, P[j].x});
+      j++;
+    }
+
+    auto it1 = s.lower_bound({P[i].y - d, P[i].x});
+    auto it2 = s.upper_bound({P[i].y + d, P[i].x});
+
+    for (auto it = it1; it != it2; ++it) {
+      double dx = P[i].x - it->y;
+      double dy = P[i].y - it->x;
+      double dist = hypot(dx, dy);
+      if (best_dist > dist) {
+        best_dist = dist;
+        ans = {point(it->y, it->x), P[i]};
+      }
+    }
+    s.emplace(P[i].y, P[i].x);
+  }
+  return ans;
+}
+
+ld area_of_largest_triangle(vector<point> &P) {
+  vector<point> ans(CH_Andrew(P));
+  ans.pop_back();
+  int n = ans.size();
+
+  auto cal_tri_area = [&](int a_idx, int b_idx, int c_idx) {
+    point &a = ans[a_idx % n];
+    point &b = ans[b_idx % n];
+    point &c = ans[c_idx % n];
+    return abs(cross(vec(a, b), vec(a, c)));
+  };
+
+  ll A = 0;
+  for (int a = 0; a < n; a++) {
+    int b = a + 1;
+    for (int k = 0; k < n - 2; k++) {
+      int c = a + k + 2;
+      ll area = cal_tri_area(a, b, c);
+      while (b + 1 < c) {
+        b++;
+        ll newarea = cal_tri_area(a, b, c);
+        if (newarea <= area) break;
+        area = newarea;
+      }
+      b = max(a + 1, b - 1);
+      A = max(A, area);
+    }
+  }
+  return A / 2.0;
 }
 
 int main() {

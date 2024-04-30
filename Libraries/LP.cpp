@@ -16,9 +16,7 @@
 // arguments.  Then, call Solve(x).
 
 #include <bits/stdc++.h>
-
 using namespace std;
-
 typedef long double DOUBLE;
 typedef vector<DOUBLE> VD;
 typedef vector<VD> VVD;
@@ -91,7 +89,6 @@ struct LPSolver {
 };
 
 int main() {
-
     const int m = 4; // constraints
     const int n = 2; // variables
     DOUBLE _A[m][n] = {

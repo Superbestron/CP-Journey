@@ -1,11 +1,13 @@
 #include <bits/stdc++.h>
 using namespace std;
+typedef vector<int> vi;
 
-struct MergeSortTree {
+class MergeSortTree {
+ private:
   int n;
-  vector<vector<int>> tree;
+  vector<vi> tree;
 
-  void build(vector<int> &a, int x, int l, int r) {
+  void build(vi &a, int x, int l, int r) {
     if (l + 1 == r) {
       tree[x] = {a[l]};
       return;
@@ -18,23 +20,23 @@ struct MergeSortTree {
           tree[2 * x + 2].begin(), tree[2 * x + 2].end(), back_inserter(tree[x]));
   }
 
-  explicit MergeSortTree(vector<int> &a) : n(a.size()) {
-    int SIZE = 1 << (31 - __builtin_clz(n) + bool(__builtin_popcount(n) - 1));
-    tree.resize(2 * SIZE - 1);
-    build(a, 0, 0, n);
-  }
-
   int count(int lq, int rq, int mn, int mx, int x, int l, int r) {
     if (rq <= l || r <= lq) return 0;
     if (lq <= l && r <= rq) {
-      return lower_bound(tree[x].begin(), tree[x].end(), mx)
-          - lower_bound(tree[x].begin(), tree[x].end(), mn);
+      return lower_bound(tree[x].begin(), tree[x].end(), mx) - lower_bound(tree[x].begin(), tree[x].end(), mn);
     }
 
     int m = (l + r) / 2;
     int a = count(lq, rq, mn, mx, 2 * x + 1, l, m);
     int b = count(lq, rq, mn, mx, 2 * x + 2, m, r);
     return a + b;
+  }
+
+ public:
+  explicit MergeSortTree(vi &a) : n(a.size()) {
+    int SIZE = 1 << (31 - __builtin_clz(n) + bool(__builtin_popcount(n) - 1));
+    tree.resize(2 * SIZE - 1);
+    build(a, 0, 0, n);
   }
 
   // [lq, rq)
@@ -45,7 +47,7 @@ struct MergeSortTree {
 };
 
 int main() {
-  vector<int> a;
+  vi a;
   MergeSortTree tree(a);
   int l = 0, n = 10, r = n - 1;
   tree.count(l, r + 1, 0, 5);

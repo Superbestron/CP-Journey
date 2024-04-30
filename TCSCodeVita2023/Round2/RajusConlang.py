@@ -60,7 +60,6 @@ def parsePrint(toPrint):
         print(dict[line[1]])
 
 
-
 for line in sys.stdin:
     stmts.append(line.strip())
 

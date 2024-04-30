@@ -2,11 +2,24 @@
 using namespace std;
 typedef long long ll;
 typedef vector<ll> vll;
+typedef vector<int> vi;
 typedef unsigned long long ull;
 
 ll sieve_size;
 bitset<10000010> bs; // 10^7 is the rough limit
 vll p; // compact list of primes
+
+void sieve(ll upperbound) { // range = [0..upperbound]
+  sieve_size = upperbound + 1; // to include upperbound
+  bs.set(); // all 1s
+  bs[0] = bs[1] = false; // except index 0+1
+  for (ll i = 2; i < sieve_size; ++i)
+    if (bs[i]) {
+      // cross out multiples of i starting from i*i
+      for (ll j = i * i; j < sieve_size; j += i) bs[j] = false;
+      p.push_back(i); // add prime i to the list
+    }
+}
 
 vll getDivisors(ll n) {
   vll ans;
@@ -22,6 +35,14 @@ vll getDivisors(ll n) {
   return ans;
 }
 
+bool isPrime(ll N) { // good enough prime test.txt
+  if (N < sieve_size) return bs[N]; // O(1) for small primes
+  for (int i = 0; i < (int) p.size() && p[i] * p[i] <= N; ++i)
+    if (N % p[i] == 0)
+      return false;
+  return true; // slow if N = large
+}
+
 vll primeFactors(ll N) { // pre-condition, N >= 1
   vll factors;
   for (int i = 0; (i < (int) p.size()) && (p[i] * p[i] <= N); ++i)
@@ -33,32 +54,15 @@ vll primeFactors(ll N) { // pre-condition, N >= 1
   return factors;
 }
 
-void sieve(ll upperbound) { // range = [0..upperbound]
-  sieve_size = upperbound + 1; // to include upperbound
-  bs.set(); // all 1s
-  bs[0] = bs[1] = false; // except index 0+1
-  for (ll i = 2; i < sieve_size; ++i)
-    if (bs[i]) {
-      // cross out multiples of i starting from i*i
-      for (ll j = i * i; j < sieve_size; j += i) bs[j] = false;
-      p.push_back(i); // add prime i to the list
-    }
-}
-
-bool isPrime(ll N) { // good enough prime test.txt
-  if (N < sieve_size) return bs[N]; // O(1) for small primes
-  for (int i = 0; i < (int) p.size() && p[i] * p[i] <= N; ++i)
-    if (N % p[i] == 0)
-      return false;
-  return true; // slow if N = large
-}
-
 unordered_map<ll, int> primeFactors2(ll N) { // pre-condition, N >= 1
   unordered_map<ll, int> factors;
   if (N == 1) return factors;
-  if (isPrime(N)) { factors[N] = 1; return factors; }
+  if (isPrime(N)) {
+    factors[N] = 1;
+    return factors;
+  }
   vll prime_facs = primeFactors(N);
-  for (ll& x : prime_facs) ++factors[x];
+  for (ll &x : prime_facs) ++factors[x];
   return factors;
 }
 
@@ -70,27 +74,6 @@ int numPF(ll N) {
       ++ans;
     }
   return ans + (N != 1);
-}
-
-int numDiffPF(ll N) {
-  int ans = 0;
-  for (int i = 0; i < p.size() && p[i] * p[i] <= N; ++i) {
-    if (N % p[i] == 0) ++ans;                      // count this prime factor
-    while (N % p[i] == 0) N /= p[i];               // only once
-  }
-  if (N != 1) ++ans;
-  return ans;
-}
-
-ll sumPF(ll N) {
-  ll ans = 0;
-  for (int i = 0; i < p.size() && p[i] * p[i] <= N; ++i)
-    while (N % p[i] == 0) {
-      N /= p[i];
-      ans += p[i];
-    }
-  if (N != 1) ans += N;
-  return ans;
 }
 
 int numDiv(ll N) {
@@ -121,6 +104,17 @@ ll sumDiv(ll N) {
   return ans;
 }
 
+ll sumPF(ll N) {
+  ll ans = 0;
+  for (int i = 0; i < p.size() && p[i] * p[i] <= N; ++i)
+    while (N % p[i] == 0) {
+      N /= p[i];
+      ans += p[i];
+    }
+  if (N != 1) ans += N;
+  return ans;
+}
+
 ll EulerPhi(ll N) {
   ll ans = N;                                    // start from ans = N
   for (int i = 0; i < (int) p.size() && p[i] * p[i] <= N; ++i) {
@@ -129,6 +123,34 @@ ll EulerPhi(ll N) {
   }
   if (N != 1) ans -= ans / N;                      // last factor
   return ans;
+}
+
+int numDiffPF(ll N) {
+  int ans = 0;
+  for (int i = 0; i < p.size() && p[i] * p[i] <= N; ++i) {
+    if (N % p[i] == 0) ++ans;                      // count this prime factor
+    while (N % p[i] == 0) N /= p[i];               // only once
+  }
+  if (N != 1) ++ans;
+  return ans;
+}
+
+const int MAX_N = 10000000;
+vll numDiffPFarr(MAX_N + 10);
+void numDiffPFMany() {
+  for (int i = 2; i <= MAX_N; i++)
+    if (numDiffPFarr[i] == 0)  // i is a prime number, remove this line if counting divisors
+      for (int j = i; j <= MAX_N; j += i)
+        numDiffPFarr[j]++;
+}
+
+vll EulerPhiArr(MAX_N + 10);
+void EulerPhiMany() {
+  for (int i = 1; i <= MAX_N; i++) EulerPhiArr[i] = i;
+  for (int i = 2; i <= MAX_N; i++)
+    if (EulerPhiArr[i] == i)  // i is a prime number
+      for (int j = i; j <= MAX_N; j += i)
+        EulerPhiArr[j] = (EulerPhiArr[j] / i) * (i - 1);
 }
 
 int factorSum(ll N) {       // pre-condition, N >= 1
@@ -156,140 +178,141 @@ deque<ll> all_divisors(ll N) {
 
 /*** Miller Rabin Primality Test ***/
 
-// modular multiplication to numbers up to 10^18 in O(1)
-// __int128 is a well accepted gcc extension also compatible with clang
-inline ull mul(ull a, ull b, ull c) { return __int128(a) * b % c; }
-
-// modular exponatiation in O(log(n))
-inline ull power(ull a, ull b, ull c) {
-  ull res = 1;
-  while (b > 0) {
-    if (b & 1) res = mul(res, a, c);
-    a = mul(a, a, c);
-    b /= 2;
-  }
-  return res;
+ull modmul(ull a, ull b, ull M) {
+  ll ret = a * b - M * ull(1.L / M * a * b);
+  return ret + M * (ret < 0) - M * (ret >= (ll) M);
 }
 
-// miller-rabin strong pseudoprimality test in complexity O(log(n))
-// returns false if n is composite
-// returns true if n is prime or strong pseudoprime in base a
-bool witness(ull n, ull d, ull s, ull a) {
-  ull x = power(a, d, n), y;
+ull modpow(ull b, ull e, ull mod) {
+  ull ans = 1;
+  for (; e; b = modmul(b, b, mod), e /= 2)
+    if (e & 1) ans = modmul(ans, b, mod);
+  return ans;
+}
 
-  // pass through all a^(d*2^k) mod n ( 0 <= k <= s )
-  while (s--) {
-    y = mul(x, x, n);
-    // if y is equal to 1 it must have been a square of -1 or 1 mod n to be prime
-    // if not the number is composite
-    if (y == 1 and x != 1 and x != n - 1) return false;
-    x = y;
+bool isPrime(ull n) {
+  if (n < 2 || n % 6 % 4 != 1) return (n | 1) == 3;
+  ull A[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022},
+      s = __builtin_ctzll(n - 1), d = n >> s;
+  for (ull a : A) {   // ^ count trailing zeroes
+    ull p = modpow(a % n, d, n), i = s;
+    while (p != 1 && p != n - 1 && a % n && i--)
+      p = modmul(p, p, n);
+    if (p != n - 1 && i != s) return false;
   }
-  // if a^(d*2^s) != 1 mod n than n is not prime
-  // a^(n-1) = 1 mod n for every n prime (fermats little theorem)
-  if (y != 1) return false;
-  // if the number is not confirmed composite return that it is either a prime
-  // or strong pseudoprime in base a
   return true;
 }
 
-// all numbers up to 10^18 are confirmed composite if these bases are used
-// if numbers are up to 10^9 use primes_small to confirm compositeness
-ull primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23};
-ull primes_small[] = {2, 3, 5, 7, 11};
+// ONLY FOR <= 1e12
+struct _count_primes_struct_t_ {
+  vi primes;
+  vi mnprimes;
+  ll ans;
+  ll y;
+  vector<pair<pair<ll, int>, char>> queries;
 
-// ckeck primality up to 10^18 in O(log(n)*k)
-// to numbers up to 10^18, testing all 9 prime numbers smaller or equal to 23 suffices
-bool is_prime_miller_rabin(ull n) {
-  // trivial cases
-  if (n == 2 or n == 3) return true;
-  if (n < 2 or n % 2 == 0 or n % 3 == 0) return false;
+  ll count_primes(ll n) {
+    // this y is actually n/y
+    // also no logarithms, welcome to reality, this y is the best for n=10^12 or n=10^13
+    y = pow(n, 0.64);
+    if (n < 100) y = n;
 
-  // calculate d = biggest odd number divisor of n-1
-  // s = number of the biggest power of two that divides n-1
-  // such that n-1 = d*2^s (d odd)
-  // __builtin_ctzll returns expoent of biggest power of two that divides n-1
-  ull s = __builtin_ctzll(n - 1);
-  ull d = (n - 1) >> s;
+    // linear sieve
+    primes.clear();
+    mnprimes.assign(y + 1, -1);
+    ans = 0;
+    for (int i = 2; i <= y; ++i) {
+      if (mnprimes[i] == -1) {
+        mnprimes[i] = primes.size();
+        primes.push_back(i);
+      }
+      for (int k = 0; k < primes.size(); ++k) {
+        int j = primes[k];
+        if (i * j > y) break;
+        mnprimes[i * j] = k;
+        if (i % j == 0) break;
+      }
+    }
+    if (n < 100) return primes.size();
+    ll s = n / y;
 
-  // check primality with the 13 bases
-  for (ull p : primes) {
-    if (p == n) return true;
-    if (!witness(n, d, s, p)) return false;  // if composite returns false
+    for (int p : primes) {
+      if (p > s) break;
+      ans++;
+    }
+    // pi(n / y)
+    int ssz = ans;
+
+    // F with two pointers
+    int ptr = primes.size() - 1;
+    for (int i = ssz; i < primes.size(); ++i) {
+      while (ptr >= i && (ll) primes[i] * primes[ptr] > n)
+        --ptr;
+      if (ptr < i) break;
+      ans -= ptr - i + 1;
+    }
+
+    // phi, store all queries
+    phi(n, ssz - 1);
+
+    sort(queries.begin(), queries.end());
+    int ind = 2;
+    int sz = primes.size();
+
+    // the order in fenwick will be reversed, because prefix sum in a fenwick is just one query
+    fenwick fw(sz);
+    for (auto [na, sign] : queries) {
+      auto [n, a] = na;
+      while (ind <= n)
+        fw.add(sz - 1 - mnprimes[ind++], 1);
+      ans += (fw.ask(sz - a - 2) + 1) * sign;
+    }
+    queries.clear();
+    return ans - 1;
   }
-  // after the iterations all remaining numbers are prime
-  return true;
-}
 
-ull random_ull(ull l, ull r) {
-  static random_device rd;
-  static mt19937_64 gen(rd());
-  return uniform_int_distribution<ull>(l, r)(gen);
-}
-
-bool is_prime_miller_rabin_2(ull n) {
-  int small_primes[] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31,
-                        37, 41, 43, 47, 53, 59, 61, 67, 71, 73,
-                        79, 83, 89, 97, 101, 103, 107, 109, 113,
-                        127, 131, 137, 139, 149, 151, 157, 163,
-                        167, 173, 179, 181, 191, 193, 197, 199,
-                        211, 223, 227, 229, 233, 239, 241, 251};
-  for (int p : small_primes) {
-    if (n == p) return true;
-    if (n % p == 0) return false;
+  void phi(ll n, int a, int sign = 1) {
+    if (n == 0) return;
+    if (a == -1) {
+      ans += n * sign;
+      return;
+    }
+    if (n <= y) {
+      queries.emplace_back(make_pair(n, a), sign);
+      return;
+    }
+    phi(n, a - 1, sign);
+    phi(n / primes[a], a - 1, -sign);
   }
-  ull d = n - 1, s = 0;
-  while (d % 2 == 0) {
-    d /= 2;
-    ++s;
-  }
-  ull x = power(random_ull(2, n - 2), d, n);
-  if (x == 1 || x == n - 1) return true;
-  for (int r = 0; r < s; ++r) {
-    x = mul(x, x, n);
-    if (x == 1) return false;
-    if (x == n - 1) return true;
-  }
-  return false;
-}
 
-/*** Pollard's Rho Algorithm ***/
+  struct fenwick {
+    vi tree;
+    int n;
 
-int bit_length(ll N) { return 64 - __builtin_clzll(N); }
+    fenwick(int n = 0) : n(n) {
+      tree.assign(n, 0);
+    }
 
-ll f(ll x, ll b, ll n) { return (mul(x, x, n) + b) % n; }
+    void add(int i, int k) {
+      for (; i < n; i = (i | (i + 1)))
+        tree[i] += k;
+    }
 
-ll rho(ll N) {
-  if (N % 2 == 0) return 2;
-  int n_bit_length = bit_length(N);
-  ll mask = (1LL << n_bit_length) - 1;
-  ll b = rand() & mask;
-  ll x = rand() & mask;
-  ll y = x, d;
-  while (true) {
-    x = f(x, b, N);
-    y = f(f(y, b, N), b, N);
-    d = gcd(abs(x - y), N);
-    if (d != 1) return d;
-  }
-}
-
-void pollard_rho(ll N, vll &vec) {
-  if (N == 1LL) return;
-  if (isPrime(N)) {
-    vec.push_back(N);
-    return;
-  }
-  ll d = rho(N);
-  pollard_rho(d, vec);
-  pollard_rho(N / d, vec);
-}
+    int ask(int r) {
+      int res = 0;
+      for (; r >= 0; r = (r & (r + 1)) - 1)
+        res += tree[r];
+      return res;
+    }
+  };
+};
 
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
+  ll n;
+  cin >> n;
   sieve(10000000);
-  for (int i = 1; i <= 10; i++) {
-    cout << is_prime_miller_rabin(i) << '\n';
-  }
+  ll res = _count_primes_struct_t_().count_primes(n);
+  cout << res << '\n';
 }

@@ -7,9 +7,7 @@ const double EPS = 1e-9;
 double DEG_to_RAD(double d) { return d * M_PI / 180.0; }
 double RAD_to_DEG(double r) { return r * 180.0 / M_PI; }
 
-// struct point_i { int x, y; };                 // minimalist mode
-
-struct point_i {
+struct point_i {                                 // minimalist mode
   int x, y;                                      // use this if possible
   point_i() { x = y = 0; }                       // default constructor
   point_i(int _x, int _y) : x(_x), y(_y) {}      // constructor
@@ -27,6 +25,15 @@ struct point {
   // use EPS (1e-9) when testing equality of two floating points
   bool operator==(point other) const {
     return (fabs(x - other.x) < EPS && (fabs(y - other.y) < EPS));
+  }
+  point operator-(const point &p) const { return {x - p.x, y - p.y}; }
+  point operator*(double s) const { return {s * x, s * y}; }
+  point operator/(double s) const { return {x / s, y / s}; }
+  double operator^(point p) const { return x * p.y - y * p.x; }
+  double operator*(point p) const { return x * p.x + y * p.y; }
+  friend std::ostream& operator<<(std::ostream& os, const point& p) {
+    os << p.x << ' ' << p.y << '\n';
+    return os;
   }
 };
 
@@ -54,19 +61,19 @@ void pointsToLine(point p1, point p2, line &l) {
 }
 
 // not needed since we will use the more robust form: ax + by + c = 0
-struct line2 { double m, c; };                   // alternative way
-
-int pointsToLine2(point p1, point p2, line2 &l) {
-  if (p1.x == p2.x) {                            // vertical line
-    l.m = INF;                                   // this is to denote a
-    l.c = p1.x;                                  // line x = x_value
-    return 0;                                    // differentiate result
-  } else {
-    l.m = (double) (p1.y - p2.y) / (p1.x - p2.x);
-    l.c = p1.y - l.m * p1.x;
-    return 1;                                    // standard y = mx + c
-  }
-}
+//struct line2 { double m, c; };                   // alternative way
+//
+//int pointsToLine2(point p1, point p2, line2 &l) {
+//  if (p1.x == p2.x) {                            // vertical line
+//    l.m = INF;                                   // this is to denote a
+//    l.c = p1.x;                                  // line x = x_value
+//    return 0;                                    // differentiate result
+//  } else {
+//    l.m = (double) (p1.y - p2.y) / (p1.x - p2.x);
+//    l.c = p1.y - l.m * p1.x;
+//    return 1;                                    // standard y = mx + c
+//  }
+//}
 
 bool areParallel(line l1, line l2) {             // check a & b
   return (fabs(l1.a - l2.a) < EPS) && (fabs(l1.b - l2.b) < EPS);
@@ -88,7 +95,7 @@ bool areIntersect(line l1, line l2, point &p) {
 }
 
 struct vec {
-  double x, y; // name: `vec' is different from STL vector
+  double x, y; // name: 'vec' is different from STL vector
   vec(double _x, double _y) : x(_x), y(_y) {}
 };
 
@@ -154,7 +161,12 @@ double angle(const point &a, const point &o, const point &b) {
 // the closest point is stored in the 4th parameter (byref)
 double distToLine(point p, point a, point b, point &c) {
   vec ap = toVec(a, p), ab = toVec(a, b);
-  double u = dot(ap, ab) / norm_sq(ab);
+  double temp = norm_sq(ab);
+  if (temp == 0) {
+    c = a;
+    return dist(p, a);
+  }
+  double u = dot(ap, ab) / temp;
   // formula: c = a + u*ab
   c = translate(a, scale(ab, u));                // translate a to c
   return dist(p, c);                             // Euclidean distance
@@ -188,15 +200,62 @@ double cross(vec a, vec b) { return a.x * b.y - a.y * b.x; }
 //          r.x * p.y - r.y * p.x;
 // }
 
-// note: to accept collinear points, we have to change the `> 0'
+// note: to accept collinear points, we have to change the '> 0'
 // returns true if point r is on the left side of line pq
 bool ccw(point p, point q, point r) {
-  return cross(toVec(p, q), toVec(p, r)) > -EPS;
+  return cross(toVec(p, q), toVec(p, r)) > EPS;
 }
 
 // returns true if point r is on the same line as the line pq
 bool collinear(point p, point q, point r) {
   return fabs(cross(toVec(p, q), toVec(p, r))) < EPS;
+}
+
+bool lineSegmentIntersection(point p1, point p2, point p3, point p4) {
+  point s1 = p2 - p1, s2 = p4 - p3;
+  double a = s1 ^ s2, a1 = s1 ^ (p3 - p1), a2 = s2 ^ (p3 - p1);
+  if (p1 == p2) {
+    if (p3 == p4) {
+      if (p1 == p3) {
+        cout << p1 << "\n";
+        return true;
+      }
+      else {
+        cout << "none\n";
+        return false;
+      }
+    } else return lineSegmentIntersection(p3, p4, p1, p2);
+  } else if (!(s1 ^ s2)) {
+    double b1 = p1 * s1, c1 = p2 * s1, b2 = p3 * s1, c2 = p4 * s1;
+    if (a1 || a2 || max(b1, min(b2, c2)) > min(c1, max(b2, c2))) {
+      cout << "none\n";
+      return false;
+    } else {
+      point r1 = min(b2, c2) < b1 ? p1 : (b2 < c2 ? p3 : p4),
+          r2 = max(b2, c2) > c1 ? p2 : (b2 > c2 ? p3 : p4);
+      if (r1 == r2) cout << r1 << "\n";
+      else cout << min(r1, r2) << " " << max(r1, r2) << "\n";
+      return true;
+    }
+  } else {
+    if (a < 0) a = -a, a1 = -a1, a2 = -a2;
+    if (a1 > 0 || a < -a1 || a2 > 0 || a < -a2) {
+      cout << "none\n";
+      return false;
+    } else {
+      cout << p1 - s1 * a2 / a << "\n";
+      return true;
+    }
+  }
+}
+
+double distFromTwoLineSegment(point &a1, point &a2, point &b1, point &b2) {
+  if (lineSegmentIntersection(a1, a2, b1, b2)) return 0;
+  else {
+    point c;
+    return min({distToLineSegment(a1, b1, b2, c), distToLineSegment(a2, b1, b2, c),
+                distToLineSegment(b1, a1, a2, c), distToLineSegment(b2, a1, a2, c)});
+  }
 }
 
 int main() {

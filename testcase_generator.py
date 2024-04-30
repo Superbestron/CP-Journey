@@ -1,14 +1,12 @@
 import random
 
-MAX = 100000
-print(1)
+tc = 50
+print(tc)
 # depends on parameters
-N = 200000
-Q = 1000
-print(N, Q)
+N = 500
 # print(*[random.randint(1, MAX) for _ in range(N)])
-for i in range(N):
-    print("a", end='')
-print()
-for i in range(Q):
-    print(1, 2)
+for i in range(tc):
+    str = ""
+    for i in range(N):
+        str += chr(random.randint(ord('a'), ord('z')))
+    print(str)

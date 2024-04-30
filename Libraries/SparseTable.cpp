@@ -13,7 +13,7 @@ class SparseTable {                              // OOP style
   SparseTable(vi &initialA) {                    // pre-processing routine
     A = initialA;
     int n = (int) A.size();
-    int L2_n = (int) log2(n)+1;
+    int L2_n = (int) log2(n) + 1;
     P2.assign(L2_n + 1, 0);
     L2.assign((1 << L2_n) + 1, 0);
     for (int i = 0; i <= L2_n; ++i) {
@@ -38,6 +38,7 @@ class SparseTable {                              // OOP style
       }
   }
 
+  // returns idx of RMQ of [i, j]
   int RMQ(int i, int j) {
     int k = L2[j - i + 1];                           // 2^k <= (j-i+1)
     int x = SpT[k][i];                           // covers [i..i+2^k-1]
@@ -47,12 +48,14 @@ class SparseTable {                              // OOP style
 };
 
 //int main() {
-//    // same example as in Chapter 2: Segment Tree
-//    vi A = {18, 17, 13, 19, 15, 11, 20};
-//    SparseTable SpT(A);
-//    int n = (int)A.size();
-//    for (int i = 0; i < n; ++i)
-//        for (int j = i; j < n; ++j)
-//            printf("RMQ(%d, %d) = %d\n", i, j, SpT.RMQ(i, j));
-//    return 0;
+//  int n, q, l, r;
+//  cin >> n >> q;
+//  vi a(n);
+//  for (int &i : a) cin >> i;
+//  SparseTable SpT(a);
+//  for (int i = 0; i < q; i++) {
+//    cin >> l >> r;
+//    int idx = SpT.RMQ(l, r - 1);
+//    cout << a[idx] << '\n';
+//  }
 //}

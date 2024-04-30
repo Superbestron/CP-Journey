@@ -19,7 +19,7 @@ const int MAX_N = 100010;
 const int p = 1e9 + 7;                             // p is a prime > MAX_N
 
 vll primes;
-ll fact[MAX_N], invFact[MAX_N];
+ll fact[MAX_N], invFact[MAX_N], Fib[MAX_N], Cat[MAX_N];
 
 ll modMultiply(ll a, ll b, ll c) {
   ll x = 0, y = a % c;
@@ -31,11 +31,11 @@ ll modMultiply(ll a, ll b, ll c) {
   return x % c;
 }
 
-ll mod(ll a, int m) {                            // returns a (mod m)
+ll mod(ll a, ll m) {                            // returns a (mod m)
   return ((a % m) + m) % m;                        // ensure positive answer
 }
 
-ll modPow(ll b, int p, int m) {                  // assume 0 <= b < m
+ll modPow(ll b, ll p, ll m) {                  // assume 0 <= b < m
   if (p == 0) return 1;
   ll ans = modPow(b, p / 2, m);                    // this is O(log p)
   ans = mod(ans * ans, m);                         // double it first
@@ -55,7 +55,7 @@ ll extEuclid(ll a, ll b, ll &x, ll &y) {    // pass x and y by ref
   return a;                                      // returns gcd(a, b)
 }
 
-ll modInverse(ll b, int m) {                   // returns b^(-1) (mod m)
+ll modInverse(ll b, ll m) {                   // returns b^(-1) (mod m)
   ll x, y;
   ll d = extEuclid(b, m, x, y);                 // to get b*x + m*y == d
   if (d != 1) return -1;                         // to indicate failure
@@ -63,8 +63,8 @@ ll modInverse(ll b, int m) {                   // returns b^(-1) (mod m)
   return mod(x, m);
 }
 
-ll fexp(ll b, int p) {
-  if (p == 0)return 1;
+ll fexp(ll b, ll p) {
+  if (p == 0) return 1;
 
   ll ans = fexp(b, p >> 1);
   ans = ans * ans;
@@ -76,25 +76,24 @@ ll inv(ll a) {                                   // Fermat's little theorem
   return modPow(a, p - 2, p);                      // modPow in Section 5.8
 }                                                // that runs in O(log p)
 
-ll C(int n, int k) {                             // O(log p)
+ll C(int n, int k, ll MOD) {                             // O(log p)
   if (n < k) return 0;                           // clearly
-  return (((fact[n] * inv(fact[k])) % p) * inv(fact[n - k])) % p;
-  // return (((fact[n] * invFact[k]) % p) * invFact[n - k]) % p; // O(1)
+  return (((fact[n] * inv(fact[k])) % MOD) * inv(fact[n - k])) % MOD;
+  // return (((fact[n] * invFact[k]) % MOD) * invFact[n - k]) % MOD; // O(1)
 }
 
 // Sped up with Lucas' Theorem
-ll C(ll n, ll k, int MOD) {
+ll L_C(ll n, ll k, ll MOD) {
   if (n < k) return 0;
   if (n >= MOD) return (C(n % MOD, k % MOD) * C(n / MOD, k / MOD)) % MOD;
   return (((fact[n] * inv(fact[k])) % MOD) * inv(fact[n - k])) % MOD;
 }
 
-ll Fib[MAX_N], Cat[MAX_N];
-
+// Need to do sieve
 vector<ii> prime_factorise(ll n) {
   vector<ii> prime_factors;
-  int exp;
   for (ll i = 0; i < primes.size() && primes[i] * primes[i] <= n; i++) {
+    int exp;
     if (n % primes[i] == 0) {
       exp = 0;
       while (n % primes[i] == 0) {
@@ -109,7 +108,7 @@ vector<ii> prime_factorise(ll n) {
 }
 
 ll crt(vll &r, vll &m) {  // m_t = m_0 * m_1 * ... * m_{n-1}
-  int mt = accumulate(m.begin(), m.end(), 1, multiplies<>());
+  ll mt = accumulate(m.begin(), m.end(), 1LL, multiplies<>());
   int x = 0;
   for (int i = 0; i < m.size(); ++i) {
     int a = mod((ll) r[i] * modInverse(mt / m[i], m[i]), m[i]);

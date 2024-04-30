@@ -1,0 +1,165 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> ii;
+
+int n, m;
+
+class SparseTable {                              // OOP style
+ private:
+  vi A, P2, L2;
+  vector<vi> SpT;                                // the Sparse Table
+ public:
+  SparseTable() {}                               // default constructor
+
+  SparseTable(vi &initialA) {                    // pre-processing routine
+    A = initialA;
+    int n = (int) A.size();
+    int L2_n = (int) log2(n) + 1;
+    P2.assign(L2_n + 1, 0);
+    L2.assign((1 << L2_n) + 1, 0);
+    for (int i = 0; i <= L2_n; ++i) {
+      P2[i] = (1 << i);                            // to speed up 2^i
+      L2[(1 << i)] = i;                            // to speed up log_2(i)
+    }
+    for (int i = 2; i < P2[L2_n]; ++i)
+      if (L2[i] == 0)
+        L2[i] = L2[i - 1];                         // to fill in the blanks
+
+    // the initialization phase
+    SpT = vector<vi>(L2[n] + 1, vi(n));
+    for (int j = 0; j < n; ++j)
+      SpT[0][j] = j;                             // RMQ of sub array [j..j]
+
+    // the two nested loops below have overall time complexity = O(n log n)
+    for (int i = 1; P2[i] <= n; ++i)             // for all i s.t. 2^i <= n
+      for (int j = 0; j + P2[i] - 1 < n; ++j) {      // for all valid j
+        int x = SpT[i - 1][j];                     // [j..j+2^(i-1)-1]
+        int y = SpT[i - 1][j + P2[i - 1]];             // [j+2^(i-1)..j+2^i-1]
+        SpT[i][j] = A[x] <= A[y] ? x : y;
+      }
+  }
+
+  // returns idx of RMQ of [i, j]
+  int RMQ(int i, int j) {
+    int k = L2[j - i + 1];                           // 2^k <= (j-i+1)
+    int x = SpT[k][i];                           // covers [i..i+2^k-1]
+    int y = SpT[k][j - P2[k] + 1];                   // covers [j-2^k+1..j]
+    return A[x] <= A[y] ? x : y;
+  }
+};
+
+class SuffixArray {
+ private:
+  void countingSort(int k) {                         // O(n)
+    int maxi = max(300, n);                          // up to 255 ASCII chars
+    vi c(maxi, 0);                                   // clear frequency table
+    for (int i = 0; i < n; i++)                      // count the frequency
+      c[i + k < n ? RA[i + k] : 0]++;                // of each integer rank
+    for (int i = 0, sum = 0; i < maxi; i++) {
+      int t = c[i]; c[i] = sum; sum += t;
+    }
+    vi tempSA(n);
+    for (int i = 0; i < n; i++)                      // sort RA
+      tempSA[c[SA[i] + k < n ? RA[SA[i] + k] : 0]++] = SA[i];
+    swap(SA, tempSA);                                // update SA
+  }
+
+  void constructSA() {                               // can go up to 400k chars
+    SA.resize(n);
+    iota(SA.begin(), SA.end(), 0);                   // the initial SA
+    RA.resize(n);
+    for (int i = 0; i < n; i++) RA[i] = T[i];        // initial rankings
+    for (int k = 1; k < n; k <<= 1) {                // repeat log_2 n times
+      countingSort(k);                               // sort by 2nd item
+      countingSort(0);                               // stable-sort by 1st item
+      vi tempRA(n);
+      int r = 0;
+      tempRA[SA[0]] = r;                             // re-ranking process
+      for (int i = 1; i < n; i++)                    // compare adj suffixes
+        // same pair => same rank r; otherwise, increase r
+        tempRA[SA[i]] = ((RA[SA[i]] == RA[SA[i - 1]])
+            && (RA[SA[i] + k] == RA[SA[i - 1] + k])) ? r : ++r;
+      swap(RA, tempRA);                              // update RA
+      if (RA[SA[n - 1]] == n - 1) break;             // nice optimisation
+    }
+  }
+
+  void computeLCP() {
+    vi Phi(n);
+    vi PLCP(n);
+    PLCP.resize(n);
+    Phi[SA[0]] = -1;                                 // default value
+    for (int i = 1; i < n; i++)                      // compute Phi in O(n)
+      Phi[SA[i]] = SA[i - 1];                        // remember prev suffix
+    for (int i = 0, L = 0; i < n; i++) {             // compute PLCP in O(n)
+      if (Phi[i] == -1) { PLCP[i] = 0; continue; }   // special case
+      while ((i + L < n) && (Phi[i] + L < n) && (T[i + L] == T[Phi[i] + L]))
+        L++;                                         // L incr max n times
+      PLCP[i] = L;
+      L = max(L - 1, 0);                             // L dec max n times
+    }
+    LCP.resize(n);
+    for (int i = 0; i < n; i++)                      // compute LCP in O(n)
+      LCP[i] = PLCP[SA[i]];                          // restore PLCP
+  }
+
+ public:
+  string T;                                          // the input string
+  const int n;                                       // the length of T
+  vi SA;                                             // Suffix Array -> SA[i] gives the ith suffix
+  vi RA;                                             // rank array
+  vi LCP;                                            // of adj sorted suffixes
+
+  SuffixArray(string &initialT) : T(initialT), n(initialT.size()) {
+    constructSA();                                   // O(n log n)
+    computeLCP();                                    // O(n)
+  }
+
+  int LCS(int required, vi &len) {
+    unordered_map<int, int> owners;
+    SparseTable SpT(LCP);
+    int mx = 0;
+    for (int l = 0, r = 0; l < LCP.size(); l++) {
+      while (r < LCP.size() && owners.size() < required) {
+        int idx = upper_bound(len.begin(), len.end(), SA[r]) - len.begin();
+        owners[idx]++;
+        r++;
+      }
+      if (owners.size() >= required) {
+        int rmq_idx = SpT.RMQ(l + 1, r - 1);
+        int val = LCP[rmq_idx];
+        mx = max(mx, val);
+      }
+      int idx2 = upper_bound(len.begin(), len.end(), SA[l]) - len.begin();
+      owners[idx2]--;
+      if (owners[idx2] == 0) owners.erase(idx2);
+    }
+    return mx;
+  }
+};
+
+inline void solve() {
+  string whole, T;
+  vi len;
+  for (int i = 0; i < n; i++) {
+    cin >> T;
+    T += i;
+    whole += T;
+    len.push_back(T.size() + (len.empty() ? 0 : len.back()));
+  }
+  SuffixArray S(whole);
+  cout << S.LCS(m, len) << '\n';
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  while (cin >> n) {
+    if (n == 0) break;
+    cin >> m;
+    solve();
+  }
+}

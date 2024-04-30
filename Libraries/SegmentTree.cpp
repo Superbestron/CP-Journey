@@ -35,7 +35,7 @@ class SegmentTree {
   ll conquerMinIdx(int a, int b) {
     if (a == FLAG) return b;                       // corner case
     if (b == FLAG) return a;
-    if (A[a] < A[b]) return a;
+    if (A[a] < A[b] || (A[a] == A[b] && a < b)) return a;
     else return b;
   }
 
@@ -198,11 +198,11 @@ class SegmentTree {
     build(1, 0, n - 1);
   }
 
+  // ALL ARE [i, j] INCLUSIVE!!
   void update(int i, int j, int val) { update(1, 0, n - 1, i, j, val); }
 
   void set(int i, int j, int val) { set(1, 0, n - 1, i, j, val); }
 
-  // [i, j] INCLUSIVE!!
   ii RMQ(int i, int j) { return RMQ(1, 0, n - 1, i, j); }
 
   ll RSQ(int i, int j) { return RSQ(1, 0, n - 1, i, j); }

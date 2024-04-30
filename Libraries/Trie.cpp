@@ -52,7 +52,7 @@ class Trie {                                     // this is TRIE
 
 int main() {
   Trie T;
-  set < string > S = {"CAR", "CAT", "RAT"};
+  set <string> S = {"CAR", "CAT", "RAT"};
   for (auto &str : S) {
     printf("Insert %s\n", str.c_str());
     T.insert(str);

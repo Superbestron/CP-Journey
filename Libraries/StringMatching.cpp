@@ -1,45 +1,51 @@
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
+typedef vector<int> vi;
 
-const int MAX_N = 200010;
-const int p = 131;                               // p and M are
-const int M = 1e9 + 7;                             // relatively prime
-char T[MAX_N], P[MAX_N];                         // T = text, P = pattern
-int n, m;                                        // n = |T|, m = |P|
+const int p = 131;                        // p and M are
+const int M = 1e9 + 7;                    // relatively prime
 
 // Knuth-Morris-Pratt's algorithm specific code
-int b[MAX_N];                                    // b = back table
-
-void kmpPreprocess() {                           // call this first
-  int i = 0, j = -1;
-  b[0] = -1;                  // starting values
-  while (i < m) {                                // pre-process P
-    while ((j >= 0) && (P[i] != P[j])) j = b[j]; // different, reset j
-    ++i; ++j;                                    // same, advance both
-    b[i] = j;
-  }
-}
-
-int kmpSearch() {                               // similar as above
-  int freq = 0;
-  int i = 0, j = 0;                              // starting values
-  while (i < n) {                                // search through T
-    while ((j >= 0) && (T[i] != P[j])) j = b[j]; // if different, reset j
-    ++i;
-    ++j;                                    // if same, advance both
-    if (j == m) {                                // a match is found
-      ++freq;
-      // printf("P is found at index %d in T\n", i-j);
-      j = b[j];                                  // prepare j for the next
+// Finding all occurrences of pattern P in string T
+class KMP {
+ private:
+  int n, m;
+  vi b;                                            // b = back table
+  const string T, P;
+ public:
+  KMP(const string &T, const string &P) : T(T), P(P) {
+    n = T.size();
+    m = P.size();
+    int i = 0, j = -1;
+    b.assign(n, 0);
+    b[0] = -1;                                     // starting values
+    while (i < m) {                                // pre-process P
+      while ((j >= 0) && (P[i] != P[j])) j = b[j]; // different, reset j
+      ++i; ++j;                                    // same, advance both
+      b[i] = j;
     }
   }
-  return freq;
-}
+  int kmpSearch() {                               // similar as above
+    int freq = 0;
+    int i = 0, j = 0;                              // starting values
+    while (i < n) {                                // search through T
+      while ((j >= 0) && (T[i] != P[j])) j = b[j]; // if different, reset j
+      ++i;
+      ++j;                                    // if same, advance both
+      if (j == m) {                                // a match is found
+        ++freq;
+        // printf("P is found at index %d in T\n", i-j);
+        j = b[j];                                  // prepare j for the next
+      }
+    }
+    return freq;
+  }
+};
 
 // Booth's algorithm KMP-variant, find minimum lexicographic rotation of string
-int least_rotation(const char s[]) {
-//  int n = s.size();
+int least_rotation(const string& s) {
+  int n = s.size();
   vector<int> f(2 * n, -1);
   int k = 0;
   for (int j = 1; j < 2 * n; j++) {
@@ -56,22 +62,6 @@ int least_rotation(const char s[]) {
     } else f[j - k] = i + 1;
   }
   return k;
-}
-
-// Rabin-Karp's algorithm specific code
-
-int Pow[MAX_N];                                  // to store p^i % M
-int h[MAX_N];                                    // to store prefix hashes
-
-void computeRollingHash() {                      // Overall: O(n)
-  Pow[0] = 1;                                    // compute p^i % M
-  for (int i = 1; i < n; ++i)                    // O(n)
-    Pow[i] = ((ll) Pow[i - 1] * p) % M;
-  h[0] = 0;
-  for (int i = 0; i < n; ++i) {                  // O(n)
-    if (i != 0) h[i] = h[i - 1];                   // rolling hash
-    h[i] = (h[i] + ((ll) T[i] * Pow[i]) % M) % M;
-  }
 }
 
 int extEuclid(int a, int b, int &x, int &y) {    // pass x and y by ref
@@ -94,53 +84,69 @@ int modInverse(int b, int m) {                   // returns b^(-1) (mod m)
   return (x + m) % m;                                // this is the answer
 }
 
-int hash_fast(int L, int R) {                    // O(1) hash of any substr
-  if (L == 0) return h[R];                       // h is the prefix hashes
-  int ans = ((h[R] - h[L - 1]) % M + M) % M;           // compute differences
-  ans = ((ll) ans * modInverse(Pow[L], M)) % M;   // remove P[L]^-1 (mod M)
-  return ans;
-}
+// Rabin-Karp's algorithm specific code
+class RabinKarp {
+ private:
+  vi h;                                            // to store prefix hashes
+ public:
+  vi Pow;                                          // to store p^i % M
+  // compute Rolling Hash
+  RabinKarp(const string &T) {                     // Overall: O(n)
+    int n = T.size();
+    h.assign(n, 0);
+    Pow.assign(n, 0);
+    Pow[0] = 1;                                    // compute p^i % M
+    for (int i = 1; i < n; ++i)                    // O(n)
+      Pow[i] = ((ll) Pow[i - 1] * p) % M;
+    for (int i = 0; i < n; ++i) {                  // O(n)
+      if (i != 0) h[i] = h[i - 1];                 // rolling hash
+      h[i] = (h[i] + ((ll) T[i] * Pow[i]) % M) % M;
+    }
+  }
+  int hash_fast(int L, int R) {                    // O(1) hash of any substr
+    if (L == 0) return h[R];                       // h is the prefix hashes
+    int ans = ((h[R] - h[L - 1]) % M + M) % M;     // compute differences
+    ans = ((ll) ans * modInverse(Pow[L], M)) % M;  // remove P[L]^-1 (mod M)
+    return ans;
+  }
+};
 
 int main() {
-  strcpy(T, "I DO NOT LIKE SEVENTY SEV BUT SEVENTY SEVENTY SEVEN");
-  strcpy(P, "SEVENTY SEVEN");
+  string T = "I DO NOT LIKE SEVENTY SEV BUT SEVENTY SEVENTY SEVEN";
+  string P = "SEVENTY SEVEN";
+  int n = T.size(), m = P.size();
 
-  n = (int) strlen(T);
-  m = (int) strlen(P);
-
-  //if the end of line character is read too, uncomment the line below
-//  T[n-1] = 0; n--; P[m-1] = 0; m--;
-
-  printf("T = '%s'\n", T);
-  printf("P = '%s'\n", P);
+  printf("T = '%s'\n", T.c_str());
+  printf("P = '%s'\n", P.c_str());
   printf("\n");
 
   printf("String Library, #match = ");
-  char *pos = strstr(T, P);
+  int pos = T.find(P);
   int freq = 0;
-  while (pos != NULL) {
+  while (pos != string::npos) {
     ++freq;
-//    printf("P is found at index %d in T\n", pos - T);
-    pos = strstr(pos + 1, P);
+    printf("P is found at index %d in T\n", pos);
+    pos = T.find(P, pos + 1);
   }
-  printf("%d\n", freq);
+  printf("Freq: %d\n\n", freq);
 
   printf("Rabin-Karp, #match = ");
-  computeRollingHash();                          // use Rolling Hash
+  RabinKarp RK(T);
   int hP = 0;
+  // Calculate rolling hash of Pattern
   for (int i = 0; i < m; ++i)                    // O(n)
-    hP = (hP + (ll) P[i] * Pow[i]) % M;
+    hP = (hP + (ll) P[i] * RK.Pow[i]) % M;
   freq = 0;
   for (int i = 0; i <= n - m; ++i)                 // try all starting pos
-    if (hash_fast(i, i + m - 1) == hP) {             // a possible match
+    if (RK.hash_fast(i, i + m - 1) == hP) {             // a possible match
       ++freq;
-//      printf("P is found at index %d in T\n", i);
+      printf("P is found at index %d in T\n", i);
     }
-  printf("%d\n", freq);
+  printf("Freq: %d\n\n", freq);
 
   printf("Knuth-Morris-Pratt, #match = ");
-  kmpPreprocess();
-  printf("%d\n", kmpSearch());
+  KMP kmp(T, P);
+  printf("%d\n\n", kmp.kmpSearch());
 
   printf("Booth's Algorithm, minimum lexicographic rotation of string starts at index ");
   printf("%d\n", least_rotation(T));

@@ -22,7 +22,7 @@ class Main {
         BigInteger y = x;                                    // initially y = x
         while (true) {
             x = f(x, b, n);                                           // x = f(x)
-            y = f(f(y, b, n), b, n);                               // y = f(f(y))
+            y = f(f(y, b, n), b, n);                               // y = f(lineSegmentIntersection(y))
             BigInteger d = x.subtract(y).gcd(n);                 // d = (x-y) % n
             if (d.compareTo(BigInteger.ONE) != 0)                    // if d != 1
                 return d;          // d is one of the divisor of composite number n

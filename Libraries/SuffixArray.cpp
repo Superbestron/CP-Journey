@@ -1,11 +1,14 @@
 #include <bits/stdc++.h>
+#include "/Users/bestron/Desktop/CP_Journey/Libraries/SparseTable.cpp"
 using namespace std;
 typedef vector<int> vi;
+typedef pair<int, int> ii;
+typedef long long ll;
+
+const int add = 3;
 
 class SuffixArray {
  private:
-  vi RA;                                             // rank array
-
   void countingSort(int k) {                         // O(n)
     int maxi = max(300, n);                          // up to 255 ASCII chars
     vi c(maxi, 0);                                   // clear frequency table
@@ -62,12 +65,82 @@ class SuffixArray {
  public:
   string T;                                          // the input string
   const int n;                                       // the length of T
-  vi SA;                                             // Suffix Array
+  vi SA;                                             // Suffix Array -> SA[i] gives the ith suffix
+  vi RA;                                             // rank array
   vi LCP;                                            // of adj sorted suffixes
 
-  SuffixArray(string &initialT, const int n) : T(initialT), n(n) {
+  SuffixArray(string &initialT) : T(initialT), n(initialT.size()) {
     constructSA();                                   // O(n log n)
     computeLCP();                                    // O(n)
+  }
+
+  // extension of class Suffix Array above
+  ii stringMatching(string &P) {                     // in O(m log n)
+    int m = P.size();                                // usually, m < n
+    int lo = 0, hi = n - 1;                          // range = [0 .. n - 1]
+    while (lo < hi) {                                // find lower bound
+      int mid = (lo + hi) / 2;                       // this is round down
+      int res = T.compare(SA[mid], m, P);            // P in suffix SA[mid]?
+      (res >= 0) ? hi = mid : lo = mid + 1;          // notice the >= sign
+    }
+    if (T.compare(SA[lo], m, P) != 0)
+      return {-1, -1};                               // if not found
+    ii ans; ans.first = lo;
+    hi = n - 1;                                      // range = [lo .. n - 1]
+    while (lo < hi) {                                // now find upper bound
+      int mid = (lo + hi) / 2;
+      int res = T.compare(SA[mid], m, P);
+      (res > 0) ? hi = mid : lo = mid + 1;           // notice the > sign
+    }
+    if (T.compare(SA[hi], m, P) != 0) --hi;          // special case
+    ans.second = hi;
+    return ans;                                      // returns (lb, ub)
+  }                                                  // where P is found
+
+  // can change to just returning mx if just need length
+  vector<string> LCS(int required, vi &len) {
+    unordered_map<int, int> owners;
+    SparseTable SpT(LCP);
+    int mx = 0;
+    set<string> st;
+    vector<string> strs;
+    for (int l = 0, r = 0; l < LCP.size(); l++) {
+      while (r < LCP.size() && owners.size() < required) {
+        int idx = upper_bound(len.begin(), len.end(), SA[r]) - len.begin();
+        owners[idx]++;
+        r++;
+      }
+      if (owners.size() >= required) {
+        int rmq_idx = SpT.RMQ(l + 1, r - 1);
+        int val = LCP[rmq_idx];
+        if (val > mx) {
+          mx = val;
+          st.clear();
+          st.insert(T.substr(SA[rmq_idx], val));
+        } else if (val == mx) {
+          st.insert(T.substr(SA[rmq_idx], val));
+        }
+      }
+      int idx2 = upper_bound(len.begin(), len.end(), SA[l]) - len.begin();
+      owners[idx2]--;
+      if (owners[idx2] == 0) owners.erase(idx2);
+    }
+    if (!st.begin()->empty()) {
+      for (auto str : st) {
+        for (char &c : str) c -= add;
+        strs.push_back(str);
+      }
+    }
+    return strs;
+  }
+
+  ll numDistinctSubstrings() {
+    // n - 1 instead of n + 1 to account for terminating character
+    ll ans = (ll) n * (n - 1) / 2;
+    for (int i = 2; i < n; i++) {
+      ans -= LCP[i];
+    }
+    return ans;
   }
 };
 
@@ -76,9 +149,23 @@ int main() {
   cin >> T;                                          // read T
   T += '$';                                          // add terminating symbol
   int n = T.size();                                  // count n
-  SuffixArray S(T, n);                               // construct SA + LCP
+  SuffixArray S(T);                                  // construct SA + LCP
   cout << "T = " << T << '\n';
-  cout << "i SA[i] LCP[i] Suffix SA[i]\n";
+  cout << "i SA[i] RA[i] LCP[i] Suffix SA[i]\n";
   for (int i = 0; i < n; i++)
-    cout << i << ' ' << S.SA[i] << "     " << S.LCP[i] << "      " << T.substr(S.SA[i]) << '\n';
+    cout << i << ' ' << S.SA[i] << "     " << S.RA[i] << "     " << S.LCP[i] << "      " << T.substr(S.SA[i]) << '\n';
+
+  // To generate generalised suffix tree for n strings
+  string whole;
+  vi len;
+  for (int i = 0; i < n; i++) {
+    cin >> T;
+    for (char &c : T) c += add;
+    T += i;
+    whole += T;
+    len.push_back(T.size() + (len.empty() ? 0 : len.back()));
+  }
+  SuffixArray SA(whole);
+
+  cout << "Number of distinct substrings: " << S.numDistinctSubstrings() << '\n';
 }
