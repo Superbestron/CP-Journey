@@ -29,18 +29,23 @@ class KMP {
   int kmpSearch() {                               // similar as above
     int freq = 0;
     int i = 0, j = 0;                              // starting values
+    int prev = -1;
     while (i < n) {                                // search through T
       while ((j >= 0) && (T[i] != P[j])) j = b[j]; // if different, reset j
       ++i;
       ++j;                                    // if same, advance both
       if (j == m) {                                // a match is found
-        ++freq;
+        if (prev + m <= i) {                       // comment out if allowing overlapping
+          ++freq;
+          prev = i;
+        }
         // printf("P is found at index %d in T\n", i-j);
         j = b[j];                                  // prepare j for the next
       }
     }
     return freq;
   }
+};
 };
 
 // Booth's algorithm KMP-variant, find minimum lexicographic rotation of string

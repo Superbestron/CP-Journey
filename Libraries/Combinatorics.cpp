@@ -85,7 +85,7 @@ ll C(int n, int k, ll MOD) {                             // O(log p)
 // Sped up with Lucas' Theorem
 ll L_C(ll n, ll k, ll MOD) {
   if (n < k) return 0;
-  if (n >= MOD) return (C(n % MOD, k % MOD) * C(n / MOD, k / MOD)) % MOD;
+  if (n >= MOD) return (L_C(n % MOD, k % MOD) * L_C(n / MOD, k / MOD)) % MOD;
   return (((fact[n] * inv(fact[k])) % MOD) * inv(fact[n - k])) % MOD;
 }
 
