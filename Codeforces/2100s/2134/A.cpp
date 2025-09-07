@@ -6,12 +6,17 @@ typedef vector<ll> vll;
 typedef pair<int, int> ii;
 typedef vector<ii> vii;
 
-int t, n;
+int t, n, a, b;
 
 inline void solve() {
-    cin >> n;
-    vi a(n);
-    for (int &i : a) cin >> i;
+    cin >> n >> a >> b;
+    if (b >= a) {
+        if ((n - b) % 2 == 0) cout << "YES\n";
+        else cout << "NO\n";
+    } else {
+        if (((n - a) % 2 == 0) && (a - b) % 2 == 0) cout << "YES\n";
+        else cout << "NO\n";
+    }
 }
 
 int main() {
