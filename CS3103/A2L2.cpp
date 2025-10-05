@@ -2,17 +2,17 @@
 // should take destination URL or IP address as input. The tool should send TCP SYN segments to the destination
 // successively by increasing IP TTL by 1 each time. Select an appropriate destination port/service based on the
 // termination conditions for your program (some of which are stated in point ii below). This will result in
-// “host unreachable” or “port unreachable” ICMP error message. Your program should have a RAW socket to retrieve this
+// "host unreachable" or "port unreachable" ICMP error message. Your program should have a RAW socket to retrieve this
 // ICMP error message. Your program should output the sender’s IP address of the ICMP error message.
 
-// i.   Prints list set of IP addresses from successive ICMP error messages.
-// ii.  Terminates after receiving and printing the IP address from ICMP "port unreachable" or "TCP RST" or
-//      "TCP SYN+ACK" messages. If there is no ICMP or TCP RST or "TCP SYN+ACK, the program may terminate after
-//      "Time Out" without printing the destination IP. <or> If there is no ICMP or TCP RST, the program may continue
-//      with next hop by incrementing the TTL until the TTL value reaches n (n should be decided by you. This is one way
-//      to terminate, you can have your own method to terminate the process).
-// iii. Checks whether the received ICMP error messages are related to the TCP SYN packets (check only whether the
-//      reply is for TCP protocol, no need to check port number).
+// 1. Prints list set of IP addresses from successive ICMP error messages.
+// 2. Terminates after receiving and printing the IP address from ICMP "port unreachable" or "TCP RST" or "TCP SYN+ACK"
+//    messages. If there is no ICMP or TCP RST or "TCP SYN+ACK, the program may terminate after "Time Out" without
+//    printing the destination IP. <or> If there is no ICMP or TCP RST, the program may continue with next hop by
+//    incrementing the TTL until the TTL value reaches n (n should be decided by you. This is one way
+//    to terminate, you can have your own method to terminate the process).
+// 3. Checks whether the received ICMP error messages are related to the TCP SYN packets (check only whether the reply
+//    is for TCP protocol, no need to check port number).
 
 #include <arpa/inet.h>
 #include <cerrno>
@@ -23,7 +23,6 @@
 #include <unistd.h>
 #include <cstring>
 #include <iostream>
-#include <chrono>
 #include <random>
 
 #define MAX_TTL 30
@@ -192,7 +191,7 @@ static bool parse_icmp_related_to_tcp(const uint8_t* buf, ssize_t len, RecvOutco
     if (!(icmphdr->icmp_type == ICMP_TIMXCEED || icmphdr->icmp_type == ICMP_UNREACH)) return false;
 
     const uint8_t* embed = buf + ip_hl + sizeof(icmp);
-    ssize_t embed_len = static_cast<size_t>(len) - (ip_hl + static_cast<ssize_t>(sizeof(icmp)));
+    ssize_t embed_len = len - static_cast<ssize_t>(ip_hl + sizeof(icmp));
     if (embed_len < static_cast<ssize_t>(sizeof(ip))) return false;
 
     const ip* orig_ip = reinterpret_cast<const ip*>(embed);
@@ -276,7 +275,7 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         int one = 1;
-        if (setsockopt(send_sock, IPPROTO_IP, IP_TTL, &one, sizeof(one)) < 0) {
+        if (setsockopt(send_sock, IPPROTO_IP, IP_HDRINCL, &one, sizeof(one)) < 0) {
             perror("setsockopt IP_HDRINCL");
             return 1;
         }

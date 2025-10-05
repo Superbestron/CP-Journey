@@ -90,6 +90,14 @@ int main() {
     int mid = lo + (hi - lo) / 2;
     can(mid) ? hi = mid : lo = mid + 1;
   }
+  // if want value to be saved
+    while (hi >= lo) {
+        int mid = lo + (hi - lo) / 2;
+        if can(mid) {
+            int ans = mid;
+            hi = mid - 1;
+        } else lo = mid + 1;
+    }
   // variant 2
   while (hi > lo) {
     int mid = lo + (hi - lo + 1) / 2;

@@ -1,0 +1,13 @@
+Subject: Invitation to SingTech Developer Centric Event  
+
+Message: 
+
+Dear $name$,
+
+This year’s grand event SingTech is about to begin. Don’t miss the innovative and exciting project demos form all areas computer science.
+
+Vote for your favourite projects at SingTech.comp.sg and get a chance win attractive prizes.
+
+Sincerely,
+
+SingTech Organising Team

@@ -11,6 +11,7 @@ set(OPENSSL_SSL_LIBRARY "/opt/homebrew/opt/openssl@3/lib/libssl.dylib")
 find_package(OpenSSL REQUIRED)
 
 # Add executable target with source files listed in SOURCE_FILES variable
-add_executable(CP_Journey Codeforces/2100s/2134/A.cpp)
+add_executable(CP_Journey
+        Codeforces/2100s/2149/F.cpp)
 
 target_link_libraries(CP_Journey OpenSSL::SSL OpenSSL::Crypto)
