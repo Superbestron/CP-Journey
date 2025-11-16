@@ -1,6 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <sstream>
+#include <bits/stdc++.h>
 using namespace std;
 
 int solution(int cutoffScore, int scoresLength, const int scores[]) {
@@ -24,11 +22,10 @@ int solution(int cutoffScore, int scoresLength, const int scores[]) {
     return total;
 }
 
-int main(){
-
+int main() {
     ios_base::sync_with_stdio(false);
-    int cutoffScore,scoresLength,data;
-    cin>>cutoffScore>>scoresLength;
+    int cutoffScore, scoresLength, data;
+    cin >> cutoffScore >> scoresLength;
     string buffer;
     getline(cin, buffer);
     getline(cin, buffer);
@@ -36,8 +33,7 @@ int main(){
 
     int scores[scoresLength];
     int i = 0;
-    while (iss >> data)
-        scores[i++] = data;
+    while (iss >> data) scores[i++] = data;
 
-    cout << solution(cutoffScore,scoresLength, scores);
+    cout << solution(cutoffScore,scoresLength, scores) << '\n';
 }

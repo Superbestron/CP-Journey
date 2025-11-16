@@ -1,6 +1,4 @@
-#include<bits/stdc++.h>
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
 void solution(int n, const vector<int>& flows) {
@@ -28,17 +26,16 @@ void solution(int n, const vector<int>& flows) {
         ans += to_string(ansArr[arr[i]]);
         ans += " ";
     }
-    cout << ans;
+    cout << ans << '\n';
 }
 
 int main() {
-    int n;
-    cin>>n;
+    int n, q;
+    cin >> n;
     vector<int> flows;
-    for(int i=0;i<n;i++) {
-        int q;cin>>q;
+    for(int i = 0; i < n; i++) {
+        cin >> q;
         flows.push_back(q);
     }
     solution(n,flows);
-    return 0;
 }

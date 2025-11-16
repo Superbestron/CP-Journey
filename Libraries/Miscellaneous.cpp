@@ -68,75 +68,75 @@ class Compare2 {
   }
 };
 
-int main() {
-  ios_base::sync_with_stdio(false);
-  cin.tie(nullptr);
-  vector<string> v = split("Hello World!", ' ');
-
-  auto comp = [](auto &a, auto &b) { return a.second > b.second; };
-  priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> pq(comp);
-  priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> pq2;
-  set<pair<int, int>, decltype(comp)> s(comp);
-  set < pair<int, int>, Compare2 > s2;
-  s.insert(make_pair(1, 2));
-  s2.insert(make_pair(1, 2));
-  pq.emplace(1, 2);
-  pq2.emplace(1, 2);
-
-  // Binary Search
-  int lo = 0, hi = 2e9;
-  // variant 1
-  while (hi > lo) {
-    int mid = lo + (hi - lo) / 2;
-    can(mid) ? hi = mid : lo = mid + 1;
-  }
-  // if want value to be saved
-    while (hi >= lo) {
-        int mid = lo + (hi - lo) / 2;
-        if can(mid) {
-            int ans = mid;
-            hi = mid - 1;
-        } else lo = mid + 1;
-    }
-  // variant 2
-  while (hi > lo) {
-    int mid = lo + (hi - lo + 1) / 2;
-    can(mid) ? lo = mid : hi = mid - 1;
-  }
-  //  double lo = 0, hi = 1000000;
-  //  while (fabs(hi - lo) > EPS) {
-  for (int i = 0; i < 50; ++i) {
-    double mid = (lo + hi) / 2.0;
-    can(mid) ? hi = mid : lo = mid;
-  }
-
-  // Measure Time
-  // Start measuring time
-  auto start = chrono::high_resolution_clock::now();
-  // Stop measuring time
-  auto end = chrono::high_resolution_clock::now();
-  // Calculate duration
-  auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
-  // Output the duration
-  cout << "Execution time: " << duration.count() << " milliseconds" << '\n';
-
-  // Backtracking
-  // iterate all subsets technique O(3^n)
-  int mask = 137; // (10001001)_2
-  for (int ss = mask; ss; ss = (ss - 1) & mask) {  // new technique
-    cout << ss << "\n"; // ss is a subset of mask
-  }
-
-  // iterate all ones of the bitmask
-  for (int bm = mask; bm; bm -= LSOne(bm)) {
-    int idx = __builtin_ctz(bm);
-  }
-
-  vi a;
-  do {
-    // iterate through all permutations
-  } while (next_permutation(a.begin(), a.end()));
-}
+//int main() {
+//  ios_base::sync_with_stdio(false);
+//  cin.tie(nullptr);
+//  vector<string> v = split("Hello World!", ' ');
+//
+//  auto comp = [](auto &a, auto &b) { return a.second > b.second; };
+//  priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(comp)> pq(comp);
+//  priority_queue<pair<int, int>, vector<pair<int, int>>, Compare> pq2;
+//  set<pair<int, int>, decltype(comp)> s(comp);
+//  set < pair<int, int>, Compare2 > s2;
+//  s.insert(make_pair(1, 2));
+//  s2.insert(make_pair(1, 2));
+//  pq.emplace(1, 2);
+//  pq2.emplace(1, 2);
+//
+//  // Binary Search
+//  int lo = 0, hi = 2e9;
+//  // variant 1
+//  while (hi > lo) {
+//    int mid = lo + (hi - lo) / 2;
+//    can(mid) ? hi = mid : lo = mid + 1;
+//  }
+//  // if want value to be saved
+//    while (hi >= lo) {
+//        int mid = lo + (hi - lo) / 2;
+//        if can(mid) {
+//            int ans = mid;
+//            hi = mid - 1;
+//        } else lo = mid + 1;
+//    }
+//  // variant 2
+//  while (hi > lo) {
+//    int mid = lo + (hi - lo + 1) / 2;
+//    can(mid) ? lo = mid : hi = mid - 1;
+//  }
+//  //  double lo = 0, hi = 1000000;
+//  //  while (fabs(hi - lo) > EPS) {
+//  for (int i = 0; i < 50; ++i) {
+//    double mid = (lo + hi) / 2.0;
+//    can(mid) ? hi = mid : lo = mid;
+//  }
+//
+//  // Measure Time
+//  // Start measuring time
+//  auto start = chrono::high_resolution_clock::now();
+//  // Stop measuring time
+//  auto end = chrono::high_resolution_clock::now();
+//  // Calculate duration
+//  auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
+//  // Output the duration
+//  cout << "Execution time: " << duration.count() << " milliseconds" << '\n';
+//
+//  // Backtracking
+//  // iterate all subsets technique O(3^n)
+//  int mask = 137; // (10001001)_2
+//  for (int ss = mask; ss; ss = (ss - 1) & mask) {  // new technique
+//    cout << ss << "\n"; // ss is a subset of mask
+//  }
+//
+//  // iterate all ones of the bitmask
+//  for (int bm = mask; bm; bm -= LSOne(bm)) {
+//    int idx = __builtin_ctz(bm);
+//  }
+//
+//  vi a;
+//  do {
+//    // iterate through all permutations
+//  } while (next_permutation(a.begin(), a.end()));
+//}
 
 bool check_date(int day, int month, int year) {
   if (day == 0 || month == 0) return false;

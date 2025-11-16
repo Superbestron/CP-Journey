@@ -1,12 +1,7 @@
-#include <iostream>
 #include <bits/stdc++.h>
-#include <string>
-#include <vector>
-#include <unordered_set>
-#include <set>
 using namespace std;
 
-void solution(int n, vector<string> employees, vector<vector<int>> shifts) {
+void solution(int n, vector<string>& employees, vector<vector<int>>& shifts) {
     vector<int> time;
     vector<unordered_set<string>> arr;
     for (size_t i = 0; i < 22; i++){
@@ -27,22 +22,15 @@ void solution(int n, vector<string> employees, vector<vector<int>> shifts) {
         if (!arr[i].empty()){
             if (start != 0) {
                 string str = to_string(start) + ' ' + to_string(i) + ' ' + to_string(curr.size());
-                for (const string& name : curr){
-                    str += ' ' + name;
-                }
+                for (const string& name : curr) str += ' ' + name;
                 toPrint[i] = str;
-                if (curr.empty()) {
-                    toPrint[i] += ' ';
-                }
+                if (curr.empty()) toPrint[i] += ' ';
                 count++;
             }
             start = i;
             for (const string& str : arr[i]){
-                if (curr.count(str) == 1){
-                    curr.erase(str);
-                } else {
-                    curr.insert(str);
-                }
+                if (curr.count(str) == 1) curr.erase(str);
+                else curr.insert(str);
             }
         }
     }
@@ -51,24 +39,3 @@ void solution(int n, vector<string> employees, vector<vector<int>> shifts) {
         if (!str.empty()) cout << str << '\n';
     }
 }
-
-//int main() {
-//    int n;
-//    cin >> n;
-//
-//    vector<string> employees;
-//    string name;
-//    for(int i = 0; i < n; i++){
-//        cin >> name;
-//        employees.push_back(name);
-//    }
-//
-//    vector<vector<int>> shifts;
-//    vector<int> shift(2);
-//    for (int i = 0; i < n; i++) {
-//        cin >> shift[0] >> shift[1];
-//        shifts.push_back(shift);
-//    }
-//
-//    solution(n, employees, shifts);
-//}

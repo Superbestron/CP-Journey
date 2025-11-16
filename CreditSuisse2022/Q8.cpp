@@ -1,12 +1,8 @@
 #include <bits/stdc++.h>
-#include <iostream>
-#include <vector>
 using namespace std;
 
-int solution(int n, int m, const vector<int>& costs) {
-    if (n == 0 || m < 2) {
-        return 0;
-    }
+int solution(int n, int m, vector<int>& costs) {
+    if (n == 0 || m < 2) return 0;
     int rsum = 0, count = 0, prev = costs[0], i = 0;
     vector<int> diff_arr;
     bool asc = true;
@@ -20,15 +16,11 @@ int solution(int n, int m, const vector<int>& costs) {
                 }
                 asc = false;
                 rsum = costs[i] - prev;
-            } else {
-                rsum += costs[i] - prev;
-            }
+            } else rsum += costs[i] - prev;
         } else {
             if (prev < costs[i]) {
                 // dont start with desc for diff_arr
-                if (count != 0) {
-                    diff_arr.push_back(rsum);
-                }
+                if (count != 0) diff_arr.push_back(rsum);
                 asc = true;
                 rsum = costs[i] - prev;
             } else {
@@ -71,12 +63,11 @@ int solution(int n, int m, const vector<int>& costs) {
 
 int main() {
     ios_base::sync_with_stdio(false);
-    int n,m;
-    cin>>n>>m;
-    vector<int>costs(m,0);
-    for(int i=0;i<m;i++){
-        cin>>costs[i];
+    int n, m;
+    cin >> n >> m;
+    vector<int> costs(m, 0);
+    for(int i = 0; i < m; i++){
+        cin >> costs[i];
     }
-    cout<<solution(n,m,costs)<<endl;
-    return 0;
+    cout << solution(n, m, costs) << '\n';
 }

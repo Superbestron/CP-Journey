@@ -60,6 +60,7 @@
 
 #include <iostream>
 #include <map>
+#include <assert.h>
 
 template<typename T>
 class Key : std::numeric_limits<T> {

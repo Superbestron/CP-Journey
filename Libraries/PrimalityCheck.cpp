@@ -307,12 +307,12 @@ struct _count_primes_struct_t_ {
   };
 };
 
-int main() {
-  ios_base::sync_with_stdio(false);
-  cin.tie(nullptr);
-  ll n;
-  cin >> n;
-  sieve(10000000);
-  ll res = _count_primes_struct_t_().count_primes(n);
-  cout << res << '\n';
-}
+//int main() {
+//  ios_base::sync_with_stdio(false);
+//  cin.tie(nullptr);
+//  ll n;
+//  cin >> n;
+//  sieve(10000000);
+//  ll res = _count_primes_struct_t_().count_primes(n);
+//  cout << res << '\n';
+//}

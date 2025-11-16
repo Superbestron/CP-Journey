@@ -1,16 +1,11 @@
-#include<bits/stdc++.h>
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 string solution(long n) {
     // Write solution here
-    if (n % 4 == 0) {
-        return "BUY";
-    } else if (n % 2 == 0) {
-        return "PASS";
-    } else {
-        return "SELL";
-    }
+    if (n % 4 == 0) return "BUY";
+    else if (n % 2 == 0) return "PASS";
+    else return "SELL";
 }
 
 int main() {

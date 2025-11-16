@@ -1,12 +1,28 @@
-#include <iostream>
 #include <bits/stdc++.h>
-#include <vector>
 #define GRAY 1
 #define WHITE 0
-
 using namespace std;
 
-bool dfs(int[], vector<vector<pair<int, int>>>&, int, int);
+bool dfs(int visited[], vector<vector<pair<int, int>>>& al, int node, int prevWeight) {
+    visited[node] = GRAY;
+    for (auto& edge : al[node]) {
+        if (prevWeight > edge.second) {
+            if (visited[edge.first] == GRAY) {
+                return true;
+            }
+            continue;
+        }
+        if (visited[edge.first] == GRAY) {
+            return true;
+        } else if (visited[edge.first] == WHITE) {
+            if (dfs(visited, al, edge.first, edge.second)) {
+                return true;
+            }
+        }
+    }
+    visited[node] = WHITE;
+    return false;
+}
 
 bool solution(int n, int l, const vector<vector<int>>& transfers) {
     vector<vector<pair<int, int>>> al;
@@ -34,31 +50,7 @@ bool solution(int n, int l, const vector<vector<int>>& transfers) {
     return ans;
 }
 
-bool dfs(int visited[], vector<vector<pair<int, int>>>& al, int node, int prevWeight) {
-
-    visited[node] = GRAY;
-    for (pair<int, int>& edge : al[node]) {
-        if (prevWeight > edge.second) {
-            if (visited[edge.first] == GRAY) {
-                return true;
-            }
-            continue;
-        }
-        if (visited[edge.first] == GRAY) {
-            return true;
-        } else if (visited[edge.first] == WHITE) {
-            if (dfs(visited, al, edge.first, edge.second)) {
-                return true;
-            }
-        }
-    }
-    visited[node] = WHITE;
-
-    return false;
-}
-
-int main()
-{
+int main() {
     int n, l;
     cin >> n >> l;
 
@@ -70,5 +62,5 @@ int main()
     }
 
     bool result = solution(n, l, transfers);
-    result ? cout<< "Ineligible" : cout<< "Eligible";
+    result ? cout << "Ineligible\n" : cout << "Eligible\n";
 }

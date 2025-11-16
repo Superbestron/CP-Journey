@@ -1,24 +1,6 @@
 #include <bits/stdc++.h>
-
+#include "../../../Libraries/PrimalityCheck.cpp"
 using namespace std;
-typedef long long ll;
-typedef vector<int> vll;
-
-ll sieve_size;
-bitset<10000010> bs; // 10^7 is the rough limit
-vll p; // compact list of primes
-
-void sieve(ll upperbound) { // range = [0..upperbound]
-  sieve_size = upperbound + 1; // to include upperbound
-  bs.set(); // all 1s
-  bs[0] = bs[1] = false; // except index 0+1
-  for (ll i = 2; i < sieve_size; ++i)
-    if (bs[i]) {
-      // cross out multiples of i starting from i*i
-      for (ll j = i * i; j < sieve_size; j += i) bs[j] = false;
-      p.push_back(i); // add prime i to the list
-    }
-}
 
 int main() {
   ios_base::sync_with_stdio(false);
