@@ -35,30 +35,59 @@ int dp(int layer, int src, int dest) {
         int src_num = src;
         int dest_num = dest;
         int prev = 5; // A
-        int cnt = 0;
+        int cnt1 = 0;
         while (src_num != dest_num) {
             int src_row = src_num / 3;
             int dest_row = dest_num / 3;
             if (src_row > dest_row) {
                 down(output, src_num);
-                cnt += dp(layer + 1, prev, 1);
+                cnt1 += dp(layer + 1, prev, 1);
                 prev = 1;
             } else if (src_row < dest_row) {
                 up(output, src_num);
-                cnt += dp(layer + 1, prev, 4);
+                cnt1 += dp(layer + 1, prev, 4);
                 prev = 4;
             } else {
                 if (src_num < dest_num) {
                     right(output, src_num);
-                    cnt += dp(layer + 1, prev, 2);
+                    cnt1 += dp(layer + 1, prev, 2);
                     prev = 2;
                 } else {
                     left(output, src_num);
-                    cnt += dp(layer + 1, prev, 0);
+                    cnt1 += dp(layer + 1, prev, 0);
                     prev = 0;
                 }
             }
         }
+        src_num = src;
+        dest_num = dest;
+        prev = 5; // A
+        int cnt2 = 0;
+        while (src_num != dest_num) {
+            int src_col = src_num % 3;
+            int dest_col = dest_num % 3;
+            if (src_col > dest_col) {
+                left(output, src_num);
+                cnt2 += dp(layer + 1, prev, 0);
+                prev = 0;
+            } else if (src_col < dest_col) {
+                right(output, src_num);
+                cnt2 += dp(layer + 1, prev, 2);
+                prev = 2;
+            } else {
+                if (src_num < dest_num) {
+                    up(output, src_num);
+                    cnt2 += dp(layer + 1, prev, 4);
+                    prev = 4;
+                } else {
+                    down(output, src_num);
+                    cnt2 += dp(layer + 1, prev, 1);
+                    prev = 1;
+                }
+            }
+        }
+//        int cnt = min(cnt1, cnt2);
+            int cnt = cnt2;
         cnt += dp(layer + 1, prev, 5);
         return ans = cnt;
     } else {

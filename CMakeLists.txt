@@ -12,6 +12,7 @@ find_package(OpenSSL REQUIRED)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(CP_Journey
-        Codeforces/2100s/2149/F.cpp)
+        AoC/2024/21A.cpp
+)
 
 target_link_libraries(CP_Journey OpenSSL::SSL OpenSSL::Crypto)
