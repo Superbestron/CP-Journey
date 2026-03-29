@@ -12,7 +12,7 @@ find_package(OpenSSL REQUIRED)
 
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(CP_Journey
-        AoC/2024/21A.cpp
+        Interviews/DataStructures/test.cpp
 )
 
 target_link_libraries(CP_Journey OpenSSL::SSL OpenSSL::Crypto)
